@@ -1,0 +1,351 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  Parent
+  Children
+  Tutor
+  Admin
+}
+
+enum UserStatus {
+  Active
+  Suspended
+  Banned
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
+
+  username String  @unique @db.VarChar(50)
+  password String  @db.VarChar(255)
+  email    String? @unique @db.VarChar(255)
+
+  role        UserRole @default(Parent)
+  phone       String?  @db.VarChar(20)
+  full_name   String?  @db.VarChar(255)
+  googleToken String?  @map("google_token") @db.Text
+
+  picture String?
+
+  is_verified Boolean    @default(false)
+  status      UserStatus @default(Active)
+
+  last_login_at       BigInt?
+  account_locked      Boolean @default(false)
+  password_changed_at BigInt?
+
+  Tutor    Tutor[]
+  Parent   Parent[]
+  Children Children[]
+
+  @@index([status])
+  @@index([role])
+  @@index([deleted_at])
+}
+
+model Tutor {
+  id             Int     @id
+  bio            String?
+  qualifications String?
+  teaching_style String?
+  is_available   Boolean @default(false)
+  demo_video_url String?
+  image          String?
+
+  profile User @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  tutorSpecialty TutorSpecialty[]
+  subscriptions  TutorSubscriptions[]
+  courses        Course[]
+  tutorReviews   TutorReview[]
+  availability   Availability?
+}
+
+model Parent {
+  id                    Int     @id
+  preferred_language    String?
+  notifications_enabled Boolean @default(false)
+
+  profile User @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  childrens     Children[]
+  tutorReviews  TutorReview[]
+  courseReviews CourseReview[]
+}
+
+model Children {
+  id             Int      @id
+  learning_goals String
+  date_of_birth  DateTime
+
+  profile User @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  parent_id Int
+  parent    Parent @relation(fields: [parent_id], references: [id], onDelete: Cascade)
+
+  courseSubscriptions CourseSubscription[]
+}
+
+model TutorSpecialty {
+  id               Int    @id @default(autoincrement())
+  subject          String
+  level            String
+  certification    String
+  years_experience Int
+
+  tutor_id Int
+  Tutor    Tutor @relation(fields: [tutor_id], references: [id], onDelete: Cascade)
+}
+
+model Course {
+  id            Int          @id @default(autoincrement())
+  title         String
+  description   String?
+  price         Float
+  total_lessons Int
+  grade         Int
+  subject       String
+  status        CourseStatus @default(Draft)
+  image         String?
+
+  tutor    Tutor @relation(fields: [tutor_id], references: [id])
+  tutor_id Int
+
+  lessons             Lesson[]
+  courseSubscriptions CourseSubscription[]
+  courseReviews       CourseReview[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
+}
+
+model Lesson {
+  id                  Int     @id @default(autoincrement())
+  title               String
+  description         String?
+  learning_objectives String?
+  materials_needed    String?
+
+  course_id Int
+  Course    Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
+}
+
+model Availability {
+  id       Int   @id @default(autoincrement())
+  tutor_id Int   @unique
+  tutor    Tutor @relation(fields: [tutor_id], references: [id])
+
+  days DayAvailability[]
+
+  timeGap Int // Minimum gap between bookings in minutes
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
+}
+
+model DayAvailability {
+  id              Int      @id @default(autoincrement())
+  availability_id Int
+  day             Day
+  startTime       DateTime
+  endTime         DateTime
+
+  availability Availability @relation(fields: [availability_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
+}
+
+model CourseSubscription {
+  id                 Int    @id @default(autoincrement())
+  status             String
+  sessions_remaining Int?
+
+  course_id Int
+  course    Course @relation(fields: [course_id], references: [id])
+
+  children_id Int
+  children    Children @relation(fields: [children_id], references: [id])
+
+  courseSubscriptionSchedules CourseSubscriptionSchedule[]
+  teachingSessions            TeachingSession[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
+}
+
+model TeachingSession {
+  id             Int           @id @default(autoincrement())
+  google_meet_id String?
+  startTime      DateTime
+  endTime        DateTime
+  status         SessionStatus @default(NotYet)
+  topics_covered String?
+
+  homework_assigned String?
+  rating            Int?
+  comment           String?
+  teaching_quality  SessionQuality?
+
+  subscription_id Int
+  subscription    CourseSubscription @relation(fields: [subscription_id], references: [id])
+}
+
+model CourseSubscriptionSchedule {
+  id              Int                @id @default(autoincrement())
+  subscription_id Int
+  subscription    CourseSubscription @relation(fields: [subscription_id], references: [id])
+
+  startTime DateTime
+  endTime   DateTime
+}
+
+model TutorReview {
+  id             Int      @id @default(autoincrement())
+  rating         Int
+  review_content String?
+  createAt       DateTime @default(now())
+
+  tutor_id  Int
+  tutor     Tutor  @relation(fields: [tutor_id], references: [id])
+  parent_id Int
+  parent    Parent @relation(fields: [parent_id], references: [id])
+}
+
+model CourseReview {
+  id             Int      @id @default(autoincrement())
+  rating         Int
+  review_content String?
+  createAt       DateTime @default(now())
+
+  course_id Int
+  course    Course @relation(fields: [course_id], references: [id])
+  parent_id Int
+  parent    Parent @relation(fields: [parent_id], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
+}
+
+enum CourseStatus {
+  Draft
+  Published
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum PlanType {
+  BASIC
+  PREMIUM
+  PROFESSIONAL
+}
+
+enum BillingCycle {
+  MONTHLY
+  ANNUALLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+  INCOMPLETE
+}
+
+enum SessionQuality {
+  POOR
+  FAIR
+  GOOD
+  EXCELLENT
+}
+
+model SubscriptionPlan {
+  id              Int                  @id @default(autoincrement())
+  name            String
+  description     String?
+  price_monthly   Float
+  price_annually  Float
+  max_courses     Int
+  commission_rate Float
+  features        String               @db.Text // Stored as JSON string
+  is_active       Boolean              @default(true)
+  created_at      DateTime             @default(now())
+  updated_at      DateTime             @default(now()) @updatedAt
+  deleted_at      DateTime?
+  // Relations
+  subscriptions   TutorSubscriptions[]
+}
+
+model TutorSubscriptions {
+  id                   Int                 @id @default(autoincrement())
+  tutor_id             Int
+  plan_id              Int
+  status               SubscriptionStatus
+  current_period_start DateTime
+  current_period_end   DateTime
+  cancel_at_period_end Boolean             @default(false)
+  billing_cycle        BillingCycle
+  payment_order_id     String?
+  created_at           DateTime            @default(now())
+  updated_at           DateTime            @default(now()) @updatedAt
+  deleted_at           DateTime?
+  // Relations
+  tutor                Tutor               @relation(fields: [tutor_id], references: [id])
+  plan                 SubscriptionPlan    @relation(fields: [plan_id], references: [id])
+  events               SubscriptionEvent[]
+
+  @@index([tutor_id])
+  @@index([plan_id])
+}
+
+model SubscriptionEvent {
+  id              Int                 @id @default(autoincrement())
+  subscription_id Int
+  event_type      String // created, renewed, canceled, plan_changed, etc.
+  previous_status SubscriptionStatus?
+  current_status  SubscriptionStatus
+  notes           String?             @db.Text
+  created_at      DateTime            @default(now())
+  updated_at      DateTime            @default(now()) @updatedAt
+  deleted_at      DateTime?
+  // Relations
+  subscription    TutorSubscriptions  @relation(fields: [subscription_id], references: [id])
+
+  @@index([subscription_id])
+}
+
+enum SessionStatus {
+  NotYet
+  Attended
+  Absent
+}

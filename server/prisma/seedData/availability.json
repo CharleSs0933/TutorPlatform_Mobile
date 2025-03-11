@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "tutor_id": 1,
+    "timeGap": 10
+  },
+  {
+    "id": 2,
+    "tutor_id": 3,
+    "timeGap": 10
+  },
+  {
+    "id": 3,
+    "tutor_id": 5,
+    "timeGap": 10
+  },
+  {
+    "id": 4,
+    "tutor_id": 7,
+    "timeGap": 10
+  },
+  {
+    "id": 5,
+    "tutor_id": 9,
+    "timeGap": 10
+  }
+]
