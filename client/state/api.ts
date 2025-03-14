@@ -330,7 +330,7 @@ export const api = createApi({
       { username: string; password: string; full_name: string; email: string }
     >({
       query: ({ username, password, full_name, email }) => ({
-        url: "/auth/login",
+        url: "/auth/register",
         method: "POST",
         body: {
           username,
