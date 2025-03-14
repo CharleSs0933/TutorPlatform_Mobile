@@ -1,7 +1,9 @@
-import { StatusBar, Text, TextInput, View } from "react-native";
+import { Pressable, StatusBar, Text, TextInput, View } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
+import { fontSizes, windowHeight, windowWidth } from "@/theme/app.constant";
+import { EvilIcons } from "@expo/vector-icons";
 
 const WelcomeHeader = () => {
   return (
@@ -18,10 +20,30 @@ const WelcomeHeader = () => {
       }}
     >
       <StatusBar barStyle={"light-content"} />
-      <View className="flex-row justify-between pt-12">
+      <View
+        style={{
+          flexDirection: "row",
+          paddingTop: verticalScale(30),
+          justifyContent: "space-between",
+        }}
+      >
         <View>
-          <Text className="text-white text-4xl font-PoppinsSemiBold">Hi</Text>
-          <Text className="text-2xl text-white font-PoppinsRegular">
+          <Text
+            style={{
+              fontSize: fontSizes.FONT32,
+              color: "#fff",
+              fontFamily: "Poppins_600SemiBold",
+            }}
+          >
+            Hi
+          </Text>
+          <Text
+            style={{
+              fontSize: fontSizes.FONT22,
+              color: "#fff",
+              fontFamily: "Poppins_400Regular",
+            }}
+          >
             Let's start Learning
           </Text>
         </View>
@@ -38,6 +60,15 @@ const WelcomeHeader = () => {
             paddingHorizontal: moderateScale(15),
           }}
         />
+        <Pressable
+          style={{
+            position: "absolute",
+            right: windowWidth(10),
+            top: windowHeight(16),
+          }}
+        >
+          <EvilIcons name="search" size={scale(30)} color={"blue"} />
+        </Pressable>
       </View>
     </LinearGradient>
   );

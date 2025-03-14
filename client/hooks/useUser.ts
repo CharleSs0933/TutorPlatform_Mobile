@@ -55,6 +55,11 @@ export default function useUser() {
     }
   };
 
+  const logout = async () => {
+    await SecureStore.deleteItemAsync("accessToken");
+    router.push("/(auth)/sign-in");
+  };
+
   const fetchUserData = useCallback(async () => {
     setLoader(true);
     try {
@@ -82,5 +87,5 @@ export default function useUser() {
     setShouldRefetch(true);
   };
 
-  return { user, loader, refetch, login, register };
+  return { user, loader, refetch, login, register, logout };
 }
