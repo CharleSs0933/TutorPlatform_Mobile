@@ -27,12 +27,18 @@ import to from "@/assets/icons/to.png";
 import onboarding1 from "@/assets/images/onboarding/1.png";
 import onboarding2 from "@/assets/images/onboarding/2.png";
 import onboarding3 from "@/assets/images/onboarding/3.png";
+import hero1 from "@/assets/images/home/hero1.jpg";
+import hero2 from "@/assets/images/home/hero2.jpg";
+import hero3 from "@/assets/images/home/hero3.jpg";
 import SignUp from "@/assets/images/sign-up.jpg";
 
 export const images = {
   onboarding1,
   onboarding2,
   onboarding3,
+  hero1,
+  hero2,
+  hero3,
   SignUp,
 };
 
@@ -89,4 +95,10 @@ export const onboarding = [
       "Achieve certification by completing courses with dedicated effort",
     image: images.onboarding3,
   },
+];
+
+export const bannerData = [
+  { image: images.hero1 },
+  { image: images.hero2 },
+  { image: images.hero3 },
 ];

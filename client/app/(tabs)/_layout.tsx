@@ -4,6 +4,7 @@ import React from "react";
 import { Feather, Ionicons, Octicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { StyleSheet } from "react-native";
+import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 
 const Layout = () => {
   const { loader } = useUser();
@@ -18,7 +19,7 @@ const Layout = () => {
               iconName = (
                 <Feather
                   name="home"
-                  size={30}
+                  size={moderateScale(24)}
                   color={color}
                   style={{ width: "auto" }}
                 />
@@ -27,7 +28,7 @@ const Layout = () => {
               iconName = (
                 <Feather
                   name="book-open"
-                  size={30}
+                  size={moderateScale(24)}
                   color={color}
                   style={{ width: "auto" }}
                 />
@@ -36,7 +37,7 @@ const Layout = () => {
               iconName = (
                 <Ionicons
                   name="document-text-outline"
-                  size={30}
+                  size={moderateScale(24)}
                   style={{ width: "auto" }}
                   color={color}
                 />
@@ -45,7 +46,7 @@ const Layout = () => {
               iconName = (
                 <Octicons
                   name="person"
-                  size={30}
+                  size={moderateScale(26)}
                   style={{ width: "auto" }}
                   color={color}
                 />
@@ -68,7 +69,7 @@ const Layout = () => {
           headerTitleStyle: {
             color: "#000",
             textAlign: "center",
-            width: "auto",
+            width: scale(320),
             fontSize: 22,
             fontFamily: "Poppins_400Regular",
           },
@@ -84,8 +85,8 @@ const Layout = () => {
             <BlurView
               intensity={80}
               style={{
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
+                borderTopLeftRadius: scale(20),
+                borderTopRightRadius: scale(20),
                 overflow: "hidden",
                 backgroundColor: "transparent",
               }}
@@ -97,7 +98,7 @@ const Layout = () => {
             borderTopLeftRadius: 0,
             borderTopRightRadius: 0,
             borderTopWidth: 0,
-            height: 55,
+            height: verticalScale(55),
             opacity: loader ? 0 : 1,
             transition: "opacity 0.3s ease-in-out",
           },
