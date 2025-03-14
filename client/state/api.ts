@@ -5,11 +5,12 @@ import {
   Parent,
   TeachingSession,
   Tutor,
+  User,
 } from "@/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { FetchArgs, BaseQueryApi } from "@reduxjs/toolkit/query";
-//   import { toast } from "sonner";
-//   import Cookies from "js-cookie";
+import { Toast } from "toastify-react-native";
+import * as SecureStore from "expo-secure-store";
 
 const customBaseQuery = async (
   args: string | FetchArgs,
@@ -17,12 +18,12 @@ const customBaseQuery = async (
   extraOptions: any
 ) => {
   const baseQuery = fetchBaseQuery({
-    baseUrl: "http://localhost:8000",
+    baseUrl: "http://192.168.1.2:8000",
     prepareHeaders: async (headers) => {
-      // const token = Cookies.get("authToken");
-      // if (token) {
-      //   headers.set("Authorization", `Bearer ${token}`);
-      // }
+      const token = SecureStore.getItem("accessToken");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
       return headers;
     },
   });
@@ -36,7 +37,7 @@ const customBaseQuery = async (
         errorData?.message ||
         result.error.status.toString() ||
         "An error occurred";
-      // toast.error(`Error: ${errorMessage}`);
+      Toast.error(`Error: ${errorMessage}`);
     }
 
     const isMutationRequest =
@@ -44,7 +45,7 @@ const customBaseQuery = async (
 
     if (isMutationRequest) {
       const successMessage = result.data?.message;
-      // if (successMessage) toast.success(successMessage);
+      if (successMessage) Toast.success(successMessage);
     }
 
     if (result.data) {
@@ -192,10 +193,10 @@ export const api = createApi({
       invalidatesTags: ["Children"],
     }),
 
-    /* 
+    /*
       ===============
       AVAILABILITIES
-      =============== 
+      ===============
       */
     getCourseAvailability: build.query<
       { date: string; slots: string[] }[],
@@ -209,10 +210,10 @@ export const api = createApi({
       }),
     }),
 
-    /* 
+    /*
       ===============
       TEACHING SESSIONS
-      =============== 
+      ===============
       */
     getSession: build.query<TeachingSession[], { userId: number }>({
       query: ({ userId }) => ({
@@ -259,10 +260,10 @@ export const api = createApi({
       invalidatesTags: ["TeachingSessions"],
     }),
 
-    /* 
+    /*
       ===============
     BOOKINGS
-      =============== 
+      ===============
       */
 
     createStripePaymentIntent: build.mutation<
@@ -305,6 +306,40 @@ export const api = createApi({
       }),
       invalidatesTags: ["Parents"],
     }),
+
+    /*
+      ===============
+    AUTH
+      ===============
+      */
+    login: build.mutation<
+      { accessToken: string },
+      { username: string; password: string }
+    >({
+      query: ({ username, password }) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: {
+          username,
+          password,
+        },
+      }),
+    }),
+    register: build.mutation<
+      User,
+      { username: string; password: string; full_name: string; email: string }
+    >({
+      query: ({ username, password, full_name, email }) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: {
+          username,
+          password,
+          full_name,
+          email,
+        },
+      }),
+    }),
   }),
 });
 
@@ -326,4 +361,6 @@ export const {
   useGetParentBookingsQuery,
   useGetParentByIdQuery,
   useUpdateParentMutation,
+  useLoginMutation,
+  useRegisterMutation,
 } = api;

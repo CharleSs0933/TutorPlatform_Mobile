@@ -1,3 +1,5 @@
+import { TextInputProps, TouchableOpacityProps } from "react-native";
+
 export interface Course {
   id: number;
   tutor_id: number;
@@ -26,14 +28,13 @@ export interface Lesson {
 }
 
 export interface User {
-  id?: number;
-  email?: string;
-  username?: string;
-  full_name?: string;
-  phone?: string;
-  role?: "Tutor" | "Parent" | "Kid";
-  google_id?: string;
-  timezone?: string;
+  id: number;
+  email: string;
+  username: string;
+  full_name: string;
+  phone: string;
+  role: "Tutor" | "Parent" | "Kid";
+  picture: string;
 }
 export interface Tutor {
   id: number;
@@ -289,4 +290,24 @@ export interface CourseSubcription {
 
   course?: Course;
   children?: Children;
+}
+
+declare interface ButtonProps extends TouchableOpacityProps {
+  title: string;
+  bgVariant?: "primary" | "secondary" | "danger" | "outline" | "success";
+  textVariant?: "primary" | "default" | "secondary" | "danger" | "success";
+  IconLeft?: React.ComponentType<any>;
+  IconRight?: React.ComponentType<any>;
+  className?: string;
+}
+
+declare interface InputFieldProps extends TextInputProps {
+  label: string;
+  icon?: any;
+  secureTextEntry?: boolean;
+  labelStyle?: string;
+  containerStyle?: string;
+  inputStyle?: string;
+  iconStyle?: string;
+  className?: string;
 }

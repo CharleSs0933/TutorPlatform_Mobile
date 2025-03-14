@@ -1,20 +1,28 @@
-import { useGetCoursesQuery } from "@/state/api";
+import { useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
 import { Text, View } from "react-native";
+import { Redirect } from "expo-router";
 
 export default function Index() {
-  const { data: courses, isLoading } = useGetCoursesQuery({});
+  const [loggedInUser, setLoggedInUser] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  if (isLoading) return <Text>Loading...</Text>;
+  useEffect(() => {
+    const subcription = async () => {
+      const token = SecureStore.getItem("accessToken");
+      setLoggedInUser(token ? true : false);
+      setLoading(false);
+    };
+    subcription();
+  }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>{JSON.stringify(courses, null, 2)}</Text>
-    </View>
+    <>
+      {loading ? (
+        <></>
+      ) : (
+        <Redirect href={!loggedInUser ? "/(routes)/onboarding" : "/(tabs)"} />
+      )}
+    </>
   );
 }
