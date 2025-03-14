@@ -1,7 +1,8 @@
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
-import "./globals.css";
+import "./global.css";
+import Providers from "./providers";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,5 +21,9 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Stack />;
+  return (
+    <Providers>
+      <Stack />
+    </Providers>
+  );
 }
