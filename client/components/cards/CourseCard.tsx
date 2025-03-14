@@ -20,7 +20,12 @@ const CourseCard = ({ item }: { item: Course }) => {
         paddingHorizontal: windowWidth(5),
         paddingVertical: windowHeight(5),
       }}
-      //   onPress={() => router.push({pathname: ''})}
+      onPress={() =>
+        router.push({
+          pathname: "/(routes)/course-details/[id]",
+          params: { id: item.id.toString() },
+        })
+      }
     >
       <View
         style={{

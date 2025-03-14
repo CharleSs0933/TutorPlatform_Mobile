@@ -1,10 +1,11 @@
+import { Tutor } from "./index.d";
 import { TextInputProps, TouchableOpacityProps } from "react-native";
 
 export interface Course {
   id: number;
   tutor_id: number;
   title: string;
-  description?: string;
+  description: string;
   total_lessons: number;
   image?: string;
   price: number;
@@ -17,6 +18,14 @@ export interface Course {
   lessons?: Lesson[];
   // courseSubscriptions?: CourseSubscription[];
   courseReviews?: CourseReview[];
+}
+
+export interface TutorSpecialty {
+  id: number;
+  subject: string;
+  level: string;
+  certification: string;
+  years_experience: number;
 }
 
 export interface Lesson {
@@ -55,6 +64,7 @@ export interface Tutor {
   };
 
   tutorReviews: TutorReviews[];
+  tutorSpecialty?: TutorSpecialty[];
 }
 
 export interface Children {

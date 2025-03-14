@@ -78,6 +78,7 @@ export const getParentById = async (
             email: true,
             full_name: true,
             phone: true,
+            username: true,
           },
         },
       },

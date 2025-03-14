@@ -92,6 +92,7 @@ export const getCourse = async (req: Request, res: Response): Promise<void> => {
                 phone: true,
               },
             },
+            tutorSpecialty: true,
           },
         },
         lessons: true,
