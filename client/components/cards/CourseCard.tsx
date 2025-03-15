@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import React from "react";
 import { Course } from "@/types";
 import {
@@ -101,5 +101,3 @@ const CourseCard = ({ item }: { item: Course }) => {
 };
 
 export default CourseCard;
-
-const styles = StyleSheet.create({});

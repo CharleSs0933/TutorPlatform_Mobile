@@ -207,7 +207,7 @@ export const createTrialBooking = async (
 
 const generateMeetLink = async () => {
   const token =
-    "ya29.a0AeXRPp6Fyr-2rZZCqTHKVyl_Ph4T4Z4p99iOL7EnmWLYUL5VFT969sVek4TeiIynGKNeCFb66f-BnM67FefYGBYH98FxAN73AwuEEb6MrwiOe_0C-swqSoG6fQzE0NZSAWVB6S4YggLMXoAYkLcUMlQu1DZjdboE6QsLDKYREAaCgYKAckSARISFQHGX2Mi9ethTgoYUf0VB8uB5_0QxQ0177";
+    "ya29.a0AeXRPp5NALrnGckgmvS55tp9ilerZSBV36--uR3PiJGXrh0OR0b45Q6-PtESpXQJLo3LiZ4CLXGdK7vXB1NTLnS6M7fZdACVIewFXs-NvLiSlanUL7z7SOpMHKp0qwJ3NyrYtvpgkRD_XXmC_FMKRZbmAvABVWS4blOyl9EvjQaCgYKAdwSARISFQHGX2MidBiwh3UV9oVOPTheClEbBQ0177";
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -247,4 +247,90 @@ const generateMeetLink = async () => {
   const meetLink = meetResponse.data.hangoutLink;
 
   return meetLink;
+};
+
+export const createPayment = async (req: Request, res: Response) => {
+  const { name, email, amount } = req.body;
+  if (!name || !email || !amount) {
+    res.status(400).json({ message: "Missing required fields" });
+    return;
+  }
+
+  try {
+    let customer;
+    const doesCustomerExist = await stripe.customers.list({
+      email,
+    });
+
+    if (doesCustomerExist.data.length > 0) {
+      customer = doesCustomerExist.data[0];
+    } else {
+      const newCustomer = await stripe.customers.create({
+        name,
+        email,
+      });
+
+      customer = newCustomer;
+    }
+
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+      { customer: customer.id },
+      { apiVersion: "2024-06-20" }
+    );
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Number(amount) * 100,
+      currency: "usd",
+      customer: customer.id,
+      automatic_payment_methods: {
+        enabled: true,
+        allow_redirects: "never",
+      },
+    });
+
+    res.json({
+      message: "Payment created successfully",
+      data: {
+        paymentIntent,
+        ephemeralKey,
+        customer: customer.id,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error creating payment",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
+
+export const payPayment = async (req: Request, res: Response) => {
+  const { payment_method_id, payment_intent_id, customer_id, client_secret } =
+    req.body;
+
+  if (!payment_method_id || !payment_intent_id || !customer_id) {
+    res.status(400).json({ message: "Missing required fields" });
+    return;
+  }
+
+  try {
+    const paymentMethod = await stripe.paymentMethods.attach(
+      payment_method_id,
+      { customer: customer_id }
+    );
+
+    const result = await stripe.paymentIntents.confirm(payment_intent_id, {
+      payment_method: paymentMethod.id,
+    });
+
+    res.json({
+      message: "Payment successful",
+      data: { result },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error paying payment",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
 };
