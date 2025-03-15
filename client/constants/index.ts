@@ -33,6 +33,7 @@ import hero3 from "@/assets/images/home/hero3.jpg";
 import SignUp from "@/assets/images/sign-up.jpg";
 import placeholder from "@/assets/images/placeholder.png";
 import check from "@/assets/images/check.png";
+import noResult from "@/assets/images/no-result.png";
 
 export const images = {
   onboarding1,
@@ -44,6 +45,7 @@ export const images = {
   SignUp,
   placeholder,
   check,
+  noResult,
 };
 
 export const icons = {
@@ -105,4 +107,15 @@ export const bannerData = [
   { image: images.hero1 },
   { image: images.hero2 },
   { image: images.hero3 },
+];
+
+export const courseSubjects = [
+  { value: "all", label: "All" },
+  { value: "Mathematics", label: "Mathematics" },
+  { value: "English", label: "English" },
+  { value: "Science", label: "Science" },
+  { value: "Chemistry", label: "Chemistry" },
+  { value: "Art", label: "Art" },
+  { value: "Computer Science", label: "Computer Science" },
+  { value: "Music", label: "Music" },
 ];

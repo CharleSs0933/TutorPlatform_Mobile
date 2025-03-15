@@ -1,7 +1,7 @@
 import useUser from "@/hooks/useUser";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Feather, Ionicons, Octicons } from "@expo/vector-icons";
+import { Feather, Octicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { StyleSheet } from "react-native";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
@@ -35,8 +35,8 @@ const Layout = () => {
               );
             } else if (route.name === "resources/index") {
               iconName = (
-                <Ionicons
-                  name="document-text-outline"
+                <Feather
+                  name="calendar"
                   size={moderateScale(24)}
                   style={{ width: "auto" }}
                   color={color}

@@ -19,7 +19,7 @@ const customBaseQuery = async (
   extraOptions: any
 ) => {
   const baseQuery = fetchBaseQuery({
-    baseUrl: "http://192.168.0.101:8000",
+    baseUrl: "http://192.168.1.2:8000",
     prepareHeaders: async (headers) => {
       const token = await SecureStore.getItemAsync("accessToken");
       if (token) {

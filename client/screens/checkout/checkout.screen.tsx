@@ -131,7 +131,8 @@ const CheckoutScreen = () => {
 
   if (isError) return <div>Failed to fetch course data</div>;
   if (!course) return <div>Course not found</div>;
-  if (!children) return <Redirect href={"/(tabs)/profile"} />;
+  if (!children)
+    return <Redirect href={"/(routes)/children-management/index"} />;
 
   const isDayDisabled = (weekday: number) => {
     return (
