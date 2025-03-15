@@ -31,7 +31,7 @@ const ProfileScreen = () => {
     isLoading,
     isError,
     refetch,
-  } = useGetParentByIdQuery({ userId: 2 });
+  } = useGetParentByIdQuery({ userId: user?.id });
 
   return (
     <View
@@ -52,7 +52,6 @@ const ProfileScreen = () => {
         <SafeAreaView style={{ paddingTop: verticalScale(20) }}>
           <View style={styles.headerContent}>
             <Text style={styles.headerTitle}>Profile</Text>
-            <View></View>
           </View>
         </SafeAreaView>
       </LinearGradient>
@@ -67,9 +66,9 @@ const ProfileScreen = () => {
           },
         ]}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <View style={[styles.profileImg, { boxShadow: "0 0 10 #888888" }]}>
-            <Text className="text-6xl font-bold uppercase">
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <View style={[styles.profileImg, { boxShadow: "0 0 5 #888888" }]}>
+            <Text className="text-3xl font-bold uppercase">
               {parent?.profile.full_name.charAt(0)}
             </Text>
           </View>
@@ -100,17 +99,21 @@ const ProfileScreen = () => {
             </Text>
             <Text style={styles.statLabel}>Enrolled</Text>
           </LinearGradient>
-          <LinearGradient
-            style={styles.statBox}
-            colors={["#BF6FF8", "#3C1BE9"]}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 1, y: 0 }}
+          <Pressable
+            onPress={() => router.push("/(routes)/children-management")}
           >
-            <Text style={styles.statNumber}>
-              {parent?.childrens?.length || 0}
-            </Text>
-            <Text style={styles.statLabel}>Children</Text>
-          </LinearGradient>
+            <LinearGradient
+              style={styles.statBox}
+              colors={["#BF6FF8", "#3C1BE9"]}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 1, y: 0 }}
+            >
+              <Text style={styles.statNumber}>
+                {parent?.childrens?.length || 0}
+              </Text>
+              <Text style={styles.statLabel}>Children</Text>
+            </LinearGradient>
+          </Pressable>
         </View>
       </View>
 
@@ -180,6 +183,7 @@ const ProfileScreen = () => {
             justifyContent: "space-between",
             marginBottom: verticalScale(20),
           }}
+          onPress={() => router.push("/(routes)/children-management")}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View
@@ -357,11 +361,11 @@ const styles = StyleSheet.create({
     width: scale(320),
     backgroundColor: "#fff",
     height: verticalScale(155),
-
     marginTop: verticalScale(-90),
     alignSelf: "center",
     borderRadius: scale(20),
-    padding: scale(15),
+    paddingVertical: scale(15),
+    paddingHorizontal: scale(25),
     zIndex: 10,
     shadowColor: "#999",
     shadowOffset: {
@@ -373,8 +377,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   profileImg: {
-    width: scale(60),
-    height: scale(60),
+    width: scale(50),
+    height: scale(50),
     aspectRatio: 1,
     borderRadius: scale(10),
     display: "flex",
@@ -399,7 +403,7 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     marginTop: verticalScale(10),
   },
   statBox: {

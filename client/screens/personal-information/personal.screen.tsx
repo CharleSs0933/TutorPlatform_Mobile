@@ -159,10 +159,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   header: {
-    height: verticalScale(180),
+    height: verticalScale(60),
     borderBottomLeftRadius: scale(20),
     borderBottomRightRadius: scale(20),
-    padding: scale(20),
+    paddingHorizontal: scale(20),
   },
   headerContent: {
     flexDirection: "row",
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerTitle: {
-    fontSize: fontSizes.FONT28,
+    fontSize: fontSizes.FONT24,
     color: "#fff",
     fontFamily: "Poppins_500Medium",
   },

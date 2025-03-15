@@ -38,6 +38,7 @@ export const getChildren = async (
         profile: {
           select: {
             full_name: true,
+            username: true,
           },
         },
       },
@@ -74,6 +75,7 @@ export const getChild = async (req: Request, res: Response): Promise<void> => {
         profile: {
           select: {
             full_name: true,
+            username: true,
           },
         },
       },
