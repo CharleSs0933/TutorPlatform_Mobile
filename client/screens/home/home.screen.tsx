@@ -75,6 +75,7 @@ const HomeScreen = () => {
               ListFooterComponent={() => (
                 <View style={{ height: verticalScale(10) }}></View>
               )}
+              contentContainerStyle={{ paddingBottom: 50 }}
             />
           </View>
           )

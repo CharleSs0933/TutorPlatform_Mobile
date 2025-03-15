@@ -21,9 +21,17 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
+import { useGetParentByIdQuery } from "@/state/api";
 
 const ProfileScreen = () => {
   const { user, logout } = useUser();
+
+  const {
+    data: parent,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetParentByIdQuery({ userId: 2 });
 
   return (
     <View
@@ -59,8 +67,13 @@ const ProfileScreen = () => {
           },
         ]}
       >
-        <View style={{ flexDirection: "row" }}>
-          Avatar
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={[styles.profileImg, { boxShadow: "0 0 10 #888888" }]}>
+            <Text className="text-6xl font-bold uppercase">
+              {parent?.profile.full_name.charAt(0)}
+            </Text>
+          </View>
+
           <View style={styles.profileTextContainer}>
             <Text
               style={[
@@ -70,9 +83,9 @@ const ProfileScreen = () => {
                 },
               ]}
             >
-              Name
+              {parent?.profile.full_name}
             </Text>
-            <Text style={styles.profileTitle}>Email</Text>
+            <Text style={styles.profileTitle}>{parent?.profile.email}</Text>
           </View>
         </View>
         <View style={styles.statsContainer}>
@@ -82,7 +95,9 @@ const ProfileScreen = () => {
             start={{ x: 0, y: 1 }}
             end={{ x: 1, y: 0 }}
           >
-            <Text style={styles.statNumber}>{user?.orders?.length}</Text>
+            <Text style={styles.statNumber}>
+              {parent?.courseReviews?.length || 0}
+            </Text>
             <Text style={styles.statLabel}>Enrolled</Text>
           </LinearGradient>
           <LinearGradient
@@ -91,8 +106,10 @@ const ProfileScreen = () => {
             start={{ x: 0, y: 1 }}
             end={{ x: 1, y: 0 }}
           >
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Certificates</Text>
+            <Text style={styles.statNumber}>
+              {parent?.childrens?.length || 0}
+            </Text>
+            <Text style={styles.statLabel}>Children</Text>
           </LinearGradient>
         </View>
       </View>
@@ -109,12 +126,12 @@ const ProfileScreen = () => {
             justifyContent: "space-between",
             marginBottom: verticalScale(20),
           }}
-          // onPress={() =>
-          //   router.push({
-          //     pathname: "/(routes)/enrolled-courses",
-          //     params: { courses: JSON.stringify(user?.orders) },
-          //   })
-          // }
+          onPress={() =>
+            router.push({
+              pathname: "/(routes)/personal",
+              params: { parent: JSON.stringify(parent?.profile) },
+            })
+          }
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View
@@ -128,7 +145,7 @@ const ProfileScreen = () => {
                 borderColor: "#E2DDFF",
               }}
             >
-              <Feather name="book-open" size={scale(21)} color={"#0047AB"} />
+              <Feather name="user" size={scale(21)} color={"#0047AB"} />
             </View>
             <View>
               <Text
@@ -139,7 +156,7 @@ const ProfileScreen = () => {
                   color: "#000",
                 }}
               >
-                Enrolled Courses
+                Personal Information
               </Text>
               <Text
                 style={{
@@ -150,7 +167,7 @@ const ProfileScreen = () => {
                   opacity: 0.6,
                 }}
               >
-                Explore your all enrolled courses
+                Manage your information in details
               </Text>
             </View>
           </View>
@@ -177,7 +194,7 @@ const ProfileScreen = () => {
               }}
             >
               <MaterialIcons
-                name="leaderboard"
+                name="child-care"
                 size={scale(23)}
                 color={"#0047AB"}
               />
@@ -191,7 +208,7 @@ const ProfileScreen = () => {
                   color: "#000",
                 }}
               >
-                Course Leaderboard
+                Children Management
               </Text>
               <Text
                 style={{
@@ -202,7 +219,7 @@ const ProfileScreen = () => {
                   opacity: 0.6,
                 }}
               >
-                Let's see your position in Leaderboard
+                Let's see your Children
               </Text>
             </View>
           </View>
@@ -244,7 +261,7 @@ const ProfileScreen = () => {
                   color: "#000",
                 }}
               >
-                My Tickets
+                Unknown
               </Text>
               <Text
                 style={{
@@ -355,11 +372,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  profileImage: {
-    width: scale(50),
-    height: scale(50),
-    borderRadius: scale(25),
-    marginBottom: verticalScale(10),
+  profileImg: {
+    width: scale(60),
+    height: scale(60),
+    aspectRatio: 1,
+    borderRadius: scale(10),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileTextContainer: {
     marginBottom: verticalScale(10),
