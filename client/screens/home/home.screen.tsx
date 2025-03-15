@@ -1,6 +1,6 @@
 import { useGetCoursesQuery } from "@/state/api";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import WelcomeHeader from "@/components/home/WelcomeHeader";
 import { scale, verticalScale } from "react-native-size-matters";
@@ -24,61 +24,60 @@ const HomeScreen = () => {
       >
         <WelcomeHeader />
         <View className="flex-1">
-          {isLoading} ? (
-          <>
-            {/* <SkeletonLoader />
-                    <SkeletonLoader /> */}
-          </>
-          ): (
-          <View style={{ paddingHorizontal: scale(8) }}>
-            <FlatList
-              ListHeaderComponent={() => (
-                <>
-                  <HomeBanner />
-                  <View
-                    style={{
-                      marginHorizontal: windowWidth(20),
-                      marginTop: verticalScale(-25),
-                    }}
-                  >
+          {isLoading ? (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <ActivityIndicator size="large" />
+            </View>
+          ) : (
+            <View style={{ paddingHorizontal: scale(2) }}>
+              <FlatList
+                ListHeaderComponent={() => (
+                  <>
+                    <HomeBanner />
                     <View
                       style={{
-                        flexDirection: "row",
-                        marginTop: windowHeight(5),
+                        marginHorizontal: windowWidth(20),
+                        marginTop: verticalScale(-25),
                       }}
                     >
-                      <Text
+                      <View
                         style={{
-                          fontSize: fontSizes.FONT35,
-                          fontFamily: "Poppins_500Medium",
+                          flexDirection: "row",
+                          marginTop: windowHeight(5),
                         }}
                       >
-                        Popular
-                      </Text>
-                      <GradiantText
-                        text="Courses"
-                        styles={{
-                          fontSize: fontSizes.FONT35,
-                          fontFamily: "Poppins_500Medium",
-                          paddingLeft: scale(5),
-                        }}
-                      />
+                        <Text
+                          style={{
+                            fontSize: fontSizes.FONT35,
+                            fontFamily: "Poppins_500Medium",
+                          }}
+                        >
+                          Popular
+                        </Text>
+                        <GradiantText
+                          text="Courses"
+                          styles={{
+                            fontSize: fontSizes.FONT35,
+                            fontFamily: "Poppins_500Medium",
+                            paddingLeft: scale(5),
+                          }}
+                        />
+                      </View>
                     </View>
-                  </View>
-                </>
-              )}
-              data={data?.courses}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => <CourseCard item={item} />}
-              ListEmptyComponent={<Text>No courses Available yet!</Text>}
-              ListFooterComponent={() => (
-                <View style={{ height: verticalScale(10) }}></View>
-              )}
-              contentContainerStyle={{ paddingBottom: 50 }}
-            />
-          </View>
-          )
+                  </>
+                )}
+                data={data?.courses}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => <CourseCard item={item} />}
+                ListEmptyComponent={<Text>No courses Available yet!</Text>}
+                ListFooterComponent={() => (
+                  <View style={{ height: verticalScale(10) }}></View>
+                )}
+                contentContainerStyle={{ paddingBottom: 50 }}
+              />
+            </View>
+          )}
         </View>
       </LinearGradient>
     </>

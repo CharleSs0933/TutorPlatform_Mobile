@@ -32,6 +32,7 @@ import hero2 from "@/assets/images/home/hero2.jpg";
 import hero3 from "@/assets/images/home/hero3.jpg";
 import SignUp from "@/assets/images/sign-up.jpg";
 import placeholder from "@/assets/images/placeholder.png";
+import check from "@/assets/images/check.png";
 
 export const images = {
   onboarding1,
@@ -42,6 +43,7 @@ export const images = {
   hero3,
   SignUp,
   placeholder,
+  check,
 };
 
 export const icons = {

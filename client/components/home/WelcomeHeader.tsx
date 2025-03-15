@@ -1,9 +1,8 @@
-import { Pressable, StatusBar, Text, TextInput, View } from "react-native";
+import { StatusBar, Text, View } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { moderateScale, scale, verticalScale } from "react-native-size-matters";
-import { fontSizes, windowHeight, windowWidth } from "@/theme/app.constant";
-import { EvilIcons } from "@expo/vector-icons";
+import { moderateScale, verticalScale } from "react-native-size-matters";
+import { fontSizes } from "@/theme/app.constant";
 import useUser from "@/hooks/useUser";
 
 const WelcomeHeader = () => {

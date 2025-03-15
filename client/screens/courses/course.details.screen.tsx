@@ -11,7 +11,7 @@ import {
 } from "@/theme/app.constant";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { scale, verticalScale } from "react-native-size-matters";
@@ -261,8 +261,8 @@ export default function CourseDetailsScreen() {
 
         {activeButton === "Reviews" && (
           <View style={{ marginHorizontal: 16, marginVertical: 25 }}>
-            {course.courseReviews?.map((review, index: number) => (
-              <ReviewCard key={index} review={review} />
+            {course.courseReviews?.map((review) => (
+              <ReviewCard key={review.id} review={review} />
             ))}
           </View>
         )}
@@ -284,7 +284,12 @@ export default function CourseDetailsScreen() {
             borderRadius: windowWidth(8),
           }}
           // disabled={purchaseLoader}
-          // onPress={handlePurchase}
+          onPress={() =>
+            router.push({
+              pathname: "/(routes)/checkout",
+              params: { courseId: course.id },
+            })
+          }
         >
           <Text
             style={{

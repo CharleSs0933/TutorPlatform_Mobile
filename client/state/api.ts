@@ -274,16 +274,56 @@ export const api = createApi({
       ===============
       */
 
+    // createStripePaymentIntent: build.mutation<
+    //   { clientSecret: string },
+    //   { amount: number }
+    // >({
+    //   query: ({ amount }) => ({
+    //     url: `/bookings/stripe/payment-intent`,
+    //     method: "POST",
+    //     body: { amount },
+    //   }),
+    // }),
     createStripePaymentIntent: build.mutation<
-      { clientSecret: string },
-      { amount: number }
+      { paymentIntent: any; ephemeralKey: any; customer: string },
+      { name: string; email: string; amount: number }
     >({
-      query: ({ amount }) => ({
-        url: `/bookings/stripe/payment-intent`,
+      query: ({ name, email, amount }) => ({
+        url: `/bookings/stripe/create`,
         method: "POST",
-        body: { amount },
+        body: {
+          name,
+          email,
+          amount,
+        },
       }),
     }),
+    payPayment: build.mutation<
+      { result: any },
+      {
+        payment_method_id: string;
+        payment_intent_id: string;
+        customer_id: string;
+        client_secret: string;
+      }
+    >({
+      query: ({
+        payment_method_id,
+        payment_intent_id,
+        customer_id,
+        client_secret,
+      }) => ({
+        url: `/bookings/stripe/pay`,
+        method: "POST",
+        body: {
+          payment_method_id,
+          payment_intent_id,
+          customer_id,
+          client_secret,
+        },
+      }),
+    }),
+
     createTrialBooking: build.mutation<any, any>({
       query: (body) => ({
         url: `/bookings/create-trial-booking`,
@@ -372,6 +412,7 @@ export const {
   useGetSessionQuery,
   useUpdateSessionMutation,
   useCreateStripePaymentIntentMutation,
+  usePayPaymentMutation,
   useCreateTrialBookingMutation,
   useGetParentBookingsQuery,
   useGetParentByIdQuery,
