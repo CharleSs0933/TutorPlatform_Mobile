@@ -340,6 +340,11 @@ export const api = createApi({
         },
       }),
     }),
+    getUserData: build.query<User, {}>({
+      query: () => ({
+        url: "/auth/me",
+      }),
+    }),
   }),
 });
 
@@ -363,4 +368,5 @@ export const {
   useUpdateParentMutation,
   useLoginMutation,
   useRegisterMutation,
+  useGetUserDataQuery,
 } = api;

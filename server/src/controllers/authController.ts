@@ -32,7 +32,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const token = jwt.sign(
-      { id: user.id, role: user.role },
+      { userId: user.id, role: user.role },
       String(process.env.JWT_SECRET),
       {
         expiresIn: "7d",
@@ -88,5 +88,45 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     res.status(500).json({ message: "Error register", error });
+  }
+};
+
+export const getUserData = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    res.status(400).json({ message: "User ID is required" });
+    return;
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: Number(userId),
+      },
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        email: true,
+        picture: true,
+        role: true,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.json({
+      message: "Get user data successfully",
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error get user data", error });
   }
 };

@@ -1,11 +1,16 @@
 import { register } from "./../../server/src/controllers/authController";
 import React, { useEffect, useState, useCallback } from "react";
 import * as SecureStore from "expo-secure-store";
-import { useLoginMutation, useRegisterMutation } from "@/state/api";
+import {
+  useGetUserDataQuery,
+  useLoginMutation,
+  useRegisterMutation,
+} from "@/state/api";
 import { router } from "expo-router";
+import { User } from "@/types";
 
 export default function useUser() {
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<User>();
   const [loader, setLoader] = useState(false);
   const [shouldRefetch, setShouldRefetch] = useState(false);
   const [loginAPI] = useLoginMutation();
@@ -63,14 +68,8 @@ export default function useUser() {
   const fetchUserData = useCallback(async () => {
     setLoader(true);
     try {
-      //   await setAuthorizationHeader();
-      //   const response = await axios.get(
-      //     `${process.env.EXPO_PUBLIC_SERVER_URI}/me`
-      //   );
-      //   await SecureStore.setItemAsync("name", response.data.user.name);
-      //   await SecureStore.setItemAsync("email", response.data.user.email);
-      //   await SecureStore.setItemAsync("avatar", response.data.user.avatar);
-      //   setUser(response.data.user);
+      const { data: user } = useGetUserDataQuery({});
+      setUser(user);
     } catch (error) {
       console.error("Error fetching user data:", error);
     } finally {
