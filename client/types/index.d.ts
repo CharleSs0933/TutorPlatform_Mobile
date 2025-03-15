@@ -238,18 +238,6 @@ export interface TeachingSession {
   };
 }
 
-export interface Parent {
-  id: number;
-  preferred_language: string;
-  notifications_enabled: boolean;
-  childrens: Array[];
-  profile: {
-    email: string;
-    full_name: string;
-    phone: string;
-  };
-}
-
 export interface Users {
   CreatedAt?: Date;
   DeletedAt?: Date;
@@ -327,4 +315,12 @@ declare interface InputFieldProps extends TextInputProps {
   inputStyle?: string;
   iconStyle?: string;
   className?: string;
+}
+
+interface FormData {
+  username: string;
+  full_name: string;
+  password: string;
+  date_of_birth: string;
+  learning_goals: string;
 }
