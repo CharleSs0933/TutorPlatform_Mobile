@@ -1,14 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import CoursesScreen from "@/screens/courses/courses.screen";
 
 const index = () => {
-  return (
-    <View>
-      <Text>index</Text>
-    </View>
-  );
+  return <CoursesScreen />;
 };
 
 export default index;
-
-const styles = StyleSheet.create({});

@@ -61,12 +61,14 @@ export const getCourses = async (
     // Trả về dữ liệu với phân trang và filter
     res.json({
       message: "Courses retrieved successfully",
-      data: courses,
-      pagination: {
-        total: totalCourses,
-        page: pageNum,
-        pageSize: pageSizeNum,
-        totalPages: Math.ceil(totalCourses / pageSizeNum),
+      data: {
+        courses,
+        pagination: {
+          total: totalCourses,
+          page: pageNum,
+          pageSize: pageSizeNum,
+          totalPages: Math.ceil(totalCourses / pageSizeNum),
+        },
       },
     });
   } catch (error: any) {
@@ -92,6 +94,7 @@ export const getCourse = async (req: Request, res: Response): Promise<void> => {
                 phone: true,
               },
             },
+            tutorSpecialty: true,
           },
         },
         lessons: true,

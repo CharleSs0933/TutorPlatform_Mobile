@@ -1,30 +1,29 @@
-import { register } from "./../../server/src/controllers/authController";
 import React, { useEffect, useState, useCallback } from "react";
 import * as SecureStore from "expo-secure-store";
-import { useLoginMutation, useRegisterMutation } from "@/state/api";
+import {
+  useLazyGetUserDataQuery,
+  useLoginMutation,
+  useRegisterMutation,
+} from "@/state/api";
 import { router } from "expo-router";
+import { User } from "@/types";
 
 export default function useUser() {
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<User | null>(null);
   const [loader, setLoader] = useState(false);
-  const [shouldRefetch, setShouldRefetch] = useState(false);
+
   const [loginAPI] = useLoginMutation();
   const [registerAPI] = useRegisterMutation();
+  const [fetchUserDataAPI, { data, error, isFetching }] =
+    useLazyGetUserDataQuery();
 
-  const login = async ({
-    username,
-    password,
-  }: {
-    username: string;
-    password: string;
-  }) => {
+  const login = async (credentials: { username: string; password: string }) => {
     setLoader(true);
     try {
-      const data = await loginAPI({ username, password }).unwrap();
-
+      const data = await loginAPI(credentials).unwrap();
       await SecureStore.setItemAsync("accessToken", data.accessToken);
-
       router.push("/(tabs)");
+      fetchUserData();
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
@@ -32,12 +31,7 @@ export default function useUser() {
     }
   };
 
-  const register = async ({
-    username,
-    password,
-    full_name,
-    email,
-  }: {
+  const register = async (userData: {
     username: string;
     password: string;
     full_name: string;
@@ -45,8 +39,7 @@ export default function useUser() {
   }) => {
     setLoader(true);
     try {
-      await registerAPI({ username, password, full_name, email }).unwrap();
-
+      await registerAPI(userData).unwrap();
       router.push("/(auth)/sign-in");
     } catch (error) {
       console.error("Register failed:", error);
@@ -57,35 +50,39 @@ export default function useUser() {
 
   const logout = async () => {
     await SecureStore.deleteItemAsync("accessToken");
+    setUser(null);
     router.push("/(auth)/sign-in");
   };
 
   const fetchUserData = useCallback(async () => {
-    setLoader(true);
-    try {
-      //   await setAuthorizationHeader();
-      //   const response = await axios.get(
-      //     `${process.env.EXPO_PUBLIC_SERVER_URI}/me`
-      //   );
-      //   await SecureStore.setItemAsync("name", response.data.user.name);
-      //   await SecureStore.setItemAsync("email", response.data.user.email);
-      //   await SecureStore.setItemAsync("avatar", response.data.user.avatar);
-      //   setUser(response.data.user);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    } finally {
-      setLoader(false);
+    const accessToken = await SecureStore.getItemAsync("accessToken");
+    if (accessToken) {
+      fetchUserDataAPI({});
+    } else {
+      setUser(null);
+      router.push("/(auth)/sign-in");
     }
-  }, []);
+  }, [fetchUserDataAPI]);
 
   useEffect(() => {
     fetchUserData();
-    return () => setShouldRefetch(false);
-  }, [fetchUserData, shouldRefetch]);
+  }, [fetchUserData]);
 
-  const refetch = () => {
-    setShouldRefetch(true);
+  useEffect(() => {
+    if (data) setUser(data);
+    if (error) {
+      console.error("Fetch user data failed:", error);
+      setUser(null);
+      router.push("/(auth)/sign-in");
+    }
+  }, [data, error]);
+
+  return {
+    user,
+    loader: loader || isFetching,
+    login,
+    register,
+    logout,
+    refetch: fetchUserData,
   };
-
-  return { user, loader, refetch, login, register, logout };
 }

@@ -8,7 +8,7 @@ export const windowHeight = (height: DimensionValue): number => {
     return 0;
   }
   let tempHeight = SCREEN_HEIGHT * (parseFloat(height.toString()) / 667);
-  return PixelRatio.roundToNearestPixel(tempHeight);
+  return Math.round(PixelRatio.roundToNearestPixel(tempHeight));
 };
 
 export const windowWidth = (width: DimensionValue): number => {
@@ -16,7 +16,8 @@ export const windowWidth = (width: DimensionValue): number => {
     return 0;
   }
   let tempWidth = SCREEN_WIDTH * (parseFloat(width.toString()) / 480);
-  return PixelRatio.roundToNearestPixel(tempWidth);
+
+  return Math.round(PixelRatio.roundToNearestPixel(tempWidth));
 };
 
 export const fontSizes = {
