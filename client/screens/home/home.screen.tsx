@@ -10,7 +10,7 @@ import HomeBanner from "@/components/home/HomeBanner";
 import CourseCard from "@/components/cards/CourseCard";
 
 const HomeScreen = () => {
-  const { data: courses, isLoading } = useGetCoursesQuery({});
+  const { data, isLoading } = useGetCoursesQuery({ pageSize: 5 });
 
   const bottomTabBarHeight = useBottomTabBarHeight();
 
@@ -67,7 +67,7 @@ const HomeScreen = () => {
                   </View>
                 </>
               )}
-              data={courses}
+              data={data?.courses}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => <CourseCard item={item} />}

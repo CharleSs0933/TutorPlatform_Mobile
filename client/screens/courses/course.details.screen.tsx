@@ -1,3 +1,4 @@
+import ReviewCard from "@/components/cards/ReviewCard";
 import CourseDetailsTabs from "@/components/course/CourseDetailsTabs";
 import CourseLesson from "@/components/course/CourseLesson";
 import { images } from "@/constants";
@@ -9,6 +10,7 @@ import {
   windowWidth,
 } from "@/theme/app.constant";
 import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -256,7 +258,46 @@ export default function CourseDetailsScreen() {
             <CourseLesson lessons={course.lessons || []} />
           </View>
         )}
+
+        {activeButton === "Reviews" && (
+          <View style={{ marginHorizontal: 16, marginVertical: 25 }}>
+            {course.courseReviews?.map((review, index: number) => (
+              <ReviewCard key={index} review={review} />
+            ))}
+          </View>
+        )}
       </ScrollView>
+
+      <BlurView
+        intensity={2}
+        style={{
+          backgroundColor: "#eaf3fb85",
+          paddingHorizontal: windowHeight(12),
+          paddingVertical: windowHeight(8),
+          paddingBottom: verticalScale(5),
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#2467EC",
+            paddingVertical: windowHeight(10),
+            borderRadius: windowWidth(8),
+          }}
+          // disabled={purchaseLoader}
+          // onPress={handlePurchase}
+        >
+          <Text
+            style={{
+              textAlign: "center",
+              color: "#FFFF",
+              fontSize: fontSizes.FONT24,
+              fontFamily: "Poppins_600SemiBold",
+            }}
+          >
+            Buy now {course.price === 0 ? "(free)" : `$${course.price}`}
+          </Text>
+        </TouchableOpacity>
+      </BlurView>
     </View>
   );
 }

@@ -98,7 +98,7 @@ const Layout = () => {
             borderTopLeftRadius: 0,
             borderTopRightRadius: 0,
             borderTopWidth: 0,
-            height: verticalScale(55),
+            height: verticalScale(50),
             opacity: loader ? 0 : 1,
             transition: "opacity 0.3s ease-in-out",
           },

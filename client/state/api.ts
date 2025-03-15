@@ -2,6 +2,7 @@ import {
   Children,
   Course,
   CourseSubcription,
+  Pagination,
   Parent,
   TeachingSession,
   Tutor,
@@ -18,9 +19,9 @@ const customBaseQuery = async (
   extraOptions: any
 ) => {
   const baseQuery = fetchBaseQuery({
-    baseUrl: "http://192.168.0.100:8000",
+    baseUrl: "http://192.168.1.2:8000",
     prepareHeaders: async (headers) => {
-      const token = SecureStore.getItem("accessToken");
+      const token = await SecureStore.getItemAsync("accessToken");
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -69,10 +70,17 @@ const customBaseQuery = async (
 export const api = createApi({
   baseQuery: customBaseQuery,
   reducerPath: "api",
-  tagTypes: ["Courses", "Tutors", "Parents", "Children", "TeachingSessions"],
+  tagTypes: [
+    "Courses",
+    "Tutors",
+    "Parents",
+    "Children",
+    "TeachingSessions",
+    "User",
+  ],
   endpoints: (build) => ({
     getCourses: build.query<
-      Course[],
+      { courses: Course[]; pagination: Pagination },
       {
         page?: number;
         pageSize?: number;
@@ -344,6 +352,7 @@ export const api = createApi({
       query: () => ({
         url: "/auth/me",
       }),
+      providesTags: ["User"],
     }),
   }),
 });
@@ -351,6 +360,7 @@ export const api = createApi({
 export const {
   useGetCoursesQuery,
   useGetCourseQuery,
+  useLazyGetCoursesQuery,
   useGetTutorsQuery,
   useGetTutorQuery,
   useGetChildrenQuery,
@@ -368,5 +378,5 @@ export const {
   useUpdateParentMutation,
   useLoginMutation,
   useRegisterMutation,
-  useGetUserDataQuery,
+  useLazyGetUserDataQuery,
 } = api;

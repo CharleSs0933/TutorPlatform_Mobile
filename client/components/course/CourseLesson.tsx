@@ -32,7 +32,7 @@ export default function CourseLesson({ lessons }: { lessons: Lesson[] }) {
           const isVisible = visibleLessons.has(lesson.id);
 
           return (
-            <>
+            <View key={lesson.id}>
               <View
                 style={{
                   marginBottom: !isVisible ? verticalScale(5) : null,
@@ -40,7 +40,6 @@ export default function CourseLesson({ lessons }: { lessons: Lesson[] }) {
                   paddingVertical: verticalScale(5),
                   borderBottomWidth: !isVisible ? 1 : 0,
                 }}
-                key={lesson.id}
               >
                 <View
                   style={{
@@ -102,7 +101,7 @@ export default function CourseLesson({ lessons }: { lessons: Lesson[] }) {
                   </View>
                 )}
               </View>
-            </>
+            </View>
           );
         })}
       </View>

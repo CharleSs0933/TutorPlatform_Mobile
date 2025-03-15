@@ -20,6 +20,13 @@ export interface Course {
   courseReviews?: CourseReview[];
 }
 
+export interface Pagination {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface TutorSpecialty {
   id: number;
   subject: string;
