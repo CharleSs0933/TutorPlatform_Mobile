@@ -85,7 +85,6 @@ const ChildManagementScreen = () => {
         await createChild(submitData).unwrap();
       } else if (modalType === "edit" && selectedChild) {
         const updatedData = { id: selectedChild.id, ...submitData };
-        if (!submitData.password) delete updatedData.password;
         await updateChild(updatedData).unwrap();
       }
       refetch();

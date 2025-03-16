@@ -31,7 +31,7 @@ const ProfileScreen = () => {
     isLoading,
     isError,
     refetch,
-  } = useGetParentByIdQuery({ userId: user?.id });
+  } = useGetParentByIdQuery({ userId: user?.id || 0 }, { skip: !user });
 
   return (
     <View

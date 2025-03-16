@@ -226,7 +226,7 @@ export interface TeachingSession {
   google_meet_id?: string;
   startTime: string;
   endTime: string;
-  status: string;
+  status: "NotYet" | "Attended" | "Absent";
   topics_covered: string;
   homework_assigned: string;
   rating?: number;

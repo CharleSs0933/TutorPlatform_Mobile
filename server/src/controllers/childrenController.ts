@@ -173,7 +173,7 @@ export const updateChild = async (
     const saltRounds = 10;
     const hashedPassword = password
       ? await bcrypt.hash(password, saltRounds)
-      : password;
+      : undefined;
 
     const updatedChild = await prisma.children.update({
       where: { id: Number(id) },
