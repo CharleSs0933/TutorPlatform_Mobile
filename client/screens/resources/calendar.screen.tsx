@@ -84,7 +84,7 @@ function CalendarScreen() {
             <Pressable onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </Pressable>
-            <Text style={styles.screenTitle}>Children Management</Text>
+            <Text style={styles.screenTitle}>Schedule</Text>
           </View>
         </SafeAreaView>
       </LinearGradient>
@@ -95,8 +95,6 @@ function CalendarScreen() {
           if (item.status === "Attended") backgroundColor = "#28a745";
           if (item.status === "Absent") backgroundColor = "#dc3545";
           if (item.status === "NotYet") backgroundColor = "#fff3cd";
-
-          console.log(items);
 
           return (
             <View style={styles.card}>
