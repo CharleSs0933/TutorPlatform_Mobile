@@ -19,6 +19,7 @@ import useUser from "@/hooks/useUser";
 
 const PersonalInformationScreen = () => {
   const { parent: parentString } = useLocalSearchParams();
+  const { refetch } = useUser();
   const initialProfile = parentString
     ? JSON.parse(parentString as string)
     : null;
@@ -56,6 +57,7 @@ const PersonalInformationScreen = () => {
       }).unwrap();
       refetch();
       setIsEditing(false);
+      refetch();
     } catch (error) {
       console.error("Failed to update profile:", error);
     }
