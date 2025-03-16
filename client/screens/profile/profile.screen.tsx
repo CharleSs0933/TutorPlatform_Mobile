@@ -96,15 +96,19 @@ const ProfileScreen = () => {
           </View>
         </View>
         <View style={styles.statsContainer}>
-          <LinearGradient
-            style={styles.statBox}
-            colors={["#01CED3", "#0185F7"]}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 1, y: 0 }}
-          >
-            <Text style={styles.statNumber}>{totalEnrolled}</Text>
-            <Text style={styles.statLabel}>Enrolled</Text>
-          </LinearGradient>
+          <Pressable onPress={() => router.push("/(routes)/package")}>
+            <LinearGradient
+              style={styles.statBox}
+              colors={["#01CED3", "#0185F7"]}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 1, y: 0 }}
+            >
+              <Text style={styles.statNumber}>
+                {parent?.courseReviews?.length || 0}
+              </Text>
+              <Text style={styles.statLabel}>Wallet</Text>
+            </LinearGradient>
+          </Pressable>
           <Pressable
             onPress={() => router.push("/(routes)/children-management")}
           >

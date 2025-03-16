@@ -84,7 +84,7 @@ function CalendarScreen() {
             <Pressable onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </Pressable>
-            <Text style={styles.screenTitle}>Children Management</Text>
+            <Text style={styles.screenTitle}>Schedule</Text>
           </View>
         </SafeAreaView>
       </LinearGradient>
