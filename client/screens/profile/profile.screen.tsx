@@ -31,7 +31,7 @@ const ProfileScreen = () => {
     isLoading,
     isError,
     refetch,
-  } = useGetParentByIdQuery({ userId: user?.id });
+  } = useGetParentByIdQuery({ userId: user?.id || 0 }, { skip: !user });
 
   return (
     <View
@@ -236,7 +236,7 @@ const ProfileScreen = () => {
             justifyContent: "space-between",
             marginBottom: verticalScale(20),
           }}
-          // onPress={() => router.push("/(routes)/my-tickets")}
+          onPress={() => router.push("/(routes)/faq")}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View
@@ -265,7 +265,7 @@ const ProfileScreen = () => {
                   color: "#000",
                 }}
               >
-                Unknown
+                FAQ's
               </Text>
               <Text
                 style={{
@@ -276,7 +276,7 @@ const ProfileScreen = () => {
                   opacity: 0.6,
                 }}
               >
-                Explore your all support tickets
+                Find intelligent answers instantly
               </Text>
             </View>
           </View>

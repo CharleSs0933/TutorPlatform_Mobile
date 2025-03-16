@@ -334,3 +334,47 @@ export const payPayment = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getParentBookings = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      res.status(400).json({ message: "UserId is required" });
+      return;
+    }
+
+    const bookings = await prisma.courseSubscription.findMany({
+      where: {
+        children: {
+          parent_id: Number(userId),
+        },
+      },
+      include: {
+        course: true,
+        children: {
+          include: {
+            profile: {
+              select: {
+                full_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.json({
+      message: "Parent's bookings retrieved successfully",
+      data: bookings,
+    });
+  } catch (error) {
+    console.error("Error retrieving booking:", error);
+    res.status(500).json({
+      message: "Error retrieving parent booking",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
