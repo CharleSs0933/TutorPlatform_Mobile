@@ -15,12 +15,15 @@ import { fontSizes } from "@/theme/app.constant";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useUpdateParentMutation } from "@/state/api";
+import useUser from "@/hooks/useUser";
 
 const PersonalInformationScreen = () => {
   const { parent: parentString } = useLocalSearchParams();
   const initialProfile = parentString
     ? JSON.parse(parentString as string)
     : null;
+
+  const { refetch } = useUser();
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState(
@@ -35,7 +38,7 @@ const PersonalInformationScreen = () => {
   const [updateParent, { isLoading: isUpdating }] = useUpdateParentMutation();
 
   const handleInputChange = (field: keyof typeof profile, value: string) => {
-    setProfile((prev) => ({ ...prev, [field]: value }));
+    setProfile((prev: any) => ({ ...prev, [field]: value }));
   };
 
   const handleUpdate = async () => {
@@ -51,6 +54,7 @@ const PersonalInformationScreen = () => {
         parentId: 2,
         formData,
       }).unwrap();
+      refetch();
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update profile:", error);

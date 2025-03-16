@@ -9,7 +9,7 @@ import { router } from "expo-router";
 import { User } from "@/types";
 
 export default function useUser() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>();
   const [loader, setLoader] = useState(false);
 
   const [loginAPI] = useLoginMutation();
@@ -50,17 +50,25 @@ export default function useUser() {
 
   const logout = async () => {
     await SecureStore.deleteItemAsync("accessToken");
-    setUser(null);
     router.push("/(auth)/sign-in");
   };
 
   const fetchUserData = useCallback(async () => {
-    const accessToken = await SecureStore.getItemAsync("accessToken");
-    if (accessToken) {
-      fetchUserDataAPI({});
-    } else {
-      setUser(null);
+    setLoader(true);
+    try {
+      const accessToken = await SecureStore.getItemAsync("accessToken");
+
+      if (!accessToken) {
+        router.push("/(auth)/sign-in");
+        return;
+      }
+
+      await fetchUserDataAPI({}).unwrap();
+    } catch (err) {
+      console.error("Error fetching user data:", err);
       router.push("/(auth)/sign-in");
+    } finally {
+      setLoader(false);
     }
   }, [fetchUserDataAPI]);
 
@@ -72,14 +80,13 @@ export default function useUser() {
     if (data) setUser(data);
     if (error) {
       console.error("Fetch user data failed:", error);
-      setUser(null);
       router.push("/(auth)/sign-in");
     }
   }, [data, error]);
 
   return {
     user,
-    loader: loader || isFetching,
+    loader,
     login,
     register,
     logout,

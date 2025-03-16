@@ -95,25 +95,24 @@ export const getUserData = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { userId } = req.body;
-
-  if (!userId) {
-    res.status(400).json({ message: "User ID is required" });
-    return;
-  }
-
   try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      res.status(400).json({ message: "User ID is required" });
+      return;
+    }
+
+    // Lấy thông tin cơ bản của người dùng
     const user = await prisma.user.findUnique({
-      where: {
-        id: Number(userId),
-      },
+      where: { id: Number(userId) },
       select: {
-        id: true,
         username: true,
         full_name: true,
         email: true,
         picture: true,
         role: true,
+        phone: true,
       },
     });
 
@@ -122,11 +121,72 @@ export const getUserData = async (
       return;
     }
 
+    let additionalData: {} | null = {};
+    switch (user.role) {
+      case "Parent":
+        additionalData = await prisma.parent.findUnique({
+          where: { id: Number(userId) },
+          select: {
+            preferred_language: true,
+            notifications_enabled: true,
+            childrens: {
+              include: {
+                profile: {
+                  select: {
+                    full_name: true,
+                    email: true,
+                    picture: true,
+                    username: true,
+                  },
+                },
+                courseSubscriptions: {
+                  include: {
+                    course: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+        break;
+
+      case "Tutor":
+        additionalData = await prisma.tutor.findUnique({
+          where: { id: Number(userId) },
+          select: {
+            bio: true,
+            qualifications: true,
+            teaching_style: true,
+            is_available: true,
+            demo_video_url: true,
+            image: true,
+          },
+        });
+        break;
+
+      case "Children":
+        additionalData = await prisma.children.findUnique({
+          where: { id: Number(userId) },
+          select: {
+            learning_goals: true,
+            date_of_birth: true,
+            parent_id: true,
+            courseSubscriptions: {
+              include: {
+                course: true,
+              },
+            },
+          },
+        });
+        break;
+    }
+
     res.json({
       message: "Get user data successfully",
-      data: user,
+      data: { ...user, ...additionalData },
     });
   } catch (error) {
-    res.status(500).json({ message: "Error get user data", error });
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ message: "Error fetching user data", error });
   }
 };
