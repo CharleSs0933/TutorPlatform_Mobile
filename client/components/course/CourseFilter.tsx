@@ -6,7 +6,7 @@ import { courseSubjects } from "@/constants";
 
 const CourseFilter = () => {
   const params = useLocalSearchParams<{ filter?: string }>();
-  const [selectedBrand, setSelectedBrand] = useState(params.filter || "All");
+  const [selectedBrand, setSelectedBrand] = useState(params.filter || "all");
 
   const handlebrandPress = (brand: string) => {
     if (selectedBrand === brand) {

@@ -64,7 +64,7 @@ const Layout = () => {
             route.name === "courses/index"
               ? "Courses"
               : route.name === "resources/index"
-              ? "Video Lessons"
+              ? "Schedules"
               : "",
           headerTitleStyle: {
             color: "#000",

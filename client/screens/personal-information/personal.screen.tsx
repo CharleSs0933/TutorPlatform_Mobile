@@ -24,8 +24,6 @@ const PersonalInformationScreen = () => {
     ? JSON.parse(parentString as string)
     : null;
 
-  const { refetch } = useUser();
-
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState(
     initialProfile || {

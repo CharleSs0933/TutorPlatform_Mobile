@@ -30,10 +30,6 @@ const ProfileScreen = () => {
       </View>
     );
 
-  if (!user) {
-    return <Redirect href="/(routes)/onboarding" />;
-  }
-
   if (user?.role !== "Parent") {
     return <Redirect href="/(tabs)/resources" />;
   }
@@ -44,8 +40,6 @@ const ProfileScreen = () => {
       (children.courseSubscriptions ? children.courseSubscriptions.length : 0)
     );
   }, 0);
-
-  console.log(totalEnrolled);
 
   return (
     <View

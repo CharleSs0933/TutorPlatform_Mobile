@@ -90,13 +90,12 @@ function CalendarScreen() {
       </LinearGradient>
       <Agenda
         items={items}
+        renderEmptyData={() => <Text>No sessions</Text>}
         renderItem={(item: TeachingSession) => {
           let backgroundColor = "#fff"; // Default
           if (item.status === "Attended") backgroundColor = "#28a745";
           if (item.status === "Absent") backgroundColor = "#dc3545";
           if (item.status === "NotYet") backgroundColor = "#fff3cd";
-
-          console.log(items);
 
           return (
             <View style={styles.card}>
