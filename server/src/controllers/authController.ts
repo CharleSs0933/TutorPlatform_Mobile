@@ -86,11 +86,24 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         full_name,
         email,
       },
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        email: true,
+        role: true,
+      },
+    });
+
+    await prisma.parent.create({
+      data: {
+        id: user.id,
+      },
     });
 
     res.json({
       message: "Register successfully",
-      data: { ...user, password: undefined },
+      data: user,
     });
   } catch (error) {
     console.log(error);
@@ -115,6 +128,7 @@ export const getUserData = async (
     const user = await prisma.user.findUnique({
       where: { id: Number(userId) },
       select: {
+        id: true,
         username: true,
         full_name: true,
         email: true,

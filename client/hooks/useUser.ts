@@ -59,7 +59,7 @@ export default function useUser() {
     if (data) setUser(data);
     if (error) {
       console.error("Fetch user data failed:", error);
-      // router.push("/(auth)/sign-in");
+      router.push("/(auth)/sign-in");
     }
   }, [data, error]);
 
