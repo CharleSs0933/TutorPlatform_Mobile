@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useLazyGetUserDataQuery, useLoginMutation } from "@/state/api";
 import { router } from "expo-router";
@@ -10,8 +10,7 @@ export default function useUser() {
 
   const [loginAPI] = useLoginMutation();
 
-  const [fetchUserDataAPI, { data, error, isFetching }] =
-    useLazyGetUserDataQuery();
+  const [fetchUserDataAPI, { data, error }] = useLazyGetUserDataQuery();
 
   const login = async (credentials: { username: string; password: string }) => {
     setLoader(true);

@@ -22,6 +22,7 @@ import { addHours, parse, format } from "date-fns";
 import { Image } from "react-native";
 import { images } from "@/constants";
 import Modal from "react-native-modal";
+import useUser from "@/hooks/useUser";
 
 const WEEKDAYS = [
   { name: "Sunday", value: 0 },
@@ -54,6 +55,8 @@ const CheckoutScreen = () => {
   const { data: children, isLoading: isChildrenLoading } = useGetChildrenQuery(
     {}
   );
+
+  const { user } = useUser();
 
   const [createTrialBooking] = useCreateTrialBookingMutation();
 
@@ -150,6 +153,7 @@ const CheckoutScreen = () => {
         children_id: selectedChildren.id,
         courseId,
         dates: formattedBookings,
+        parent_id: user?.id,
       };
 
       await createTrialBooking(bookingData).unwrap();

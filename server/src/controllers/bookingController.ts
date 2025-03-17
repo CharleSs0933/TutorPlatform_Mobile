@@ -55,7 +55,7 @@ export const createTrialBooking = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { courseId, children_id, dates } = req.body;
+  const { courseId, children_id, dates, parent_id } = req.body;
 
   try {
     // Validate request body
@@ -78,6 +78,7 @@ export const createTrialBooking = async (
       select: {
         id: true,
         total_lessons: true,
+        price: true,
         lessons: {
           select: {
             id: true,
@@ -114,6 +115,21 @@ export const createTrialBooking = async (
         },
         include: {
           courseSubscriptionSchedules: true,
+        },
+      });
+
+      await tx.parent.update({
+        where: {
+          id: Number(parent_id),
+        },
+        data: {
+          profile: {
+            update: {
+              walletAmount: {
+                decrement: course.price,
+              },
+            },
+          },
         },
       });
 
