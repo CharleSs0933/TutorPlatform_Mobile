@@ -7,7 +7,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGetChildrenQuery } from "@/state/api";
@@ -19,6 +19,13 @@ const ResourceScreen = () => {
   const router = useRouter();
   const { data: children, isLoading, isError } = useGetChildrenQuery({});
 
+  const handleChildAttended = (childId: number) => {
+    router.push({
+      pathname: "/(routes)/attended-check",
+      params: { childId: childId.toString() },
+    });
+  };
+
   const handleChildPress = (childId: number) => {
     router.push({
       pathname: "/(routes)/calendar",
@@ -27,10 +34,7 @@ const ResourceScreen = () => {
   };
 
   const renderChildItem = ({ item }: { item: any }) => (
-    <Pressable
-      style={styles.childCard}
-      onPress={() => handleChildPress(item.id)}
-    >
+    <View style={styles.childCard}>
       <LinearGradient colors={["#01CED3", "#0185F7"]} style={styles.avatar}>
         <Text style={styles.avatarText}>
           {item.profile.full_name.charAt(0).toUpperCase()}
@@ -42,8 +46,18 @@ const ResourceScreen = () => {
           DOB: {new Date(item.date_of_birth).toLocaleDateString()}
         </Text>
       </View>
-      <Ionicons name="calendar-outline" size={24} color="#6248FF" />
-    </Pressable>
+      <Pressable onPress={() => handleChildAttended(item.id)}>
+        <FontAwesome
+          name="calendar-check-o"
+          size={24}
+          color="#0185F7"
+          style={{ marginRight: 10 }}
+        />
+      </Pressable>
+      <Pressable onPress={() => handleChildPress(item.id)}>
+        <Ionicons name="calendar-outline" size={24} color="#6248FF" />
+      </Pressable>
+    </View>
   );
 
   return (
