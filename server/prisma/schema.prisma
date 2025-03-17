@@ -178,8 +178,8 @@ model DayAvailability {
 }
 
 model CourseSubscription {
-  id                 Int    @id @default(autoincrement())
-  status             String
+  id                 Int                      @id @default(autoincrement())
+  status             CourseSubscriptionStatus @default(Active)
   sessions_remaining Int?
 
   course_id Int
@@ -350,4 +350,10 @@ enum SessionStatus {
   NotYet
   Attended
   Absent
+}
+
+enum CourseSubscriptionStatus {
+  Active
+  Canceled
+  Completed
 }

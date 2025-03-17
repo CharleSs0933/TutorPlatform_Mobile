@@ -56,7 +56,7 @@ const CheckoutScreen = () => {
     {}
   );
 
-  const { user } = useUser();
+  const { user, refetch } = useUser();
 
   const [createTrialBooking] = useCreateTrialBookingMutation();
 
@@ -157,6 +157,7 @@ const CheckoutScreen = () => {
       };
 
       await createTrialBooking(bookingData).unwrap();
+      refetch();
       setBookingSuccess(true);
     } catch (error) {
       console.log(error);
