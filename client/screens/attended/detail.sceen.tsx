@@ -21,7 +21,6 @@ const DetailAttendedScreen = () => {
   const subscriptionSessions = sessions.filter(
     (session: any) => session.subscription_id === Number(subscriptionId)
   );
-
   const absentCount = subscriptionSessions.filter(
     (session) => session.status === "Absent"
   ).length;
@@ -31,7 +30,6 @@ const DetailAttendedScreen = () => {
   const attendedCount = subscriptionSessions.filter(
     (session: any) => session.status === "Attended"
   ).length;
-
   const totalSessions = subscriptionSessions.filter(
     (session: any) =>
       session.status === "Attended" || session.status === "Absent"
@@ -81,7 +79,7 @@ const DetailAttendedScreen = () => {
     );
   }
 
-  if (isError || !subscriptionSessions.length) {
+  if (isError || !subscriptionSessions) {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>No session details available</Text>
