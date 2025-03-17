@@ -325,6 +325,7 @@ export interface BaseUser {
   username: string;
   full_name: string;
   phone: string;
+  walletAmount: number;
   role: "Tutor" | "Parent" | "Kid";
   picture: string;
 }
@@ -356,3 +357,10 @@ export interface KidUser extends BaseUser {
 
 // Tạo kiểu User chung bằng Union Type
 export type User = ParentUser | TutorUser | KidUser;
+
+export type WalletPackage = {
+  id: number;
+  amount: number;
+  bonus: number;
+  price: number;
+};

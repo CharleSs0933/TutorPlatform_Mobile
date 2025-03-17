@@ -394,6 +394,15 @@ export const api = createApi({
       }),
       providesTags: ["User"],
     }),
+    addMoneyToWallet: build.mutation<{}, { amount: number }>({
+      query: ({ amount }) => ({
+        url: "users/add-money",
+        method: "POST",
+        body: {
+          amount,
+        },
+      }),
+    }),
   }),
 });
 
@@ -420,4 +429,5 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useLazyGetUserDataQuery,
+  useAddMoneyToWalletMutation,
 } = api;

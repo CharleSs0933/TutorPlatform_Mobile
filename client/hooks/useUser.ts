@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import * as SecureStore from "expo-secure-store";
-import {
-  useLazyGetUserDataQuery,
-  useLoginMutation,
-  useRegisterMutation,
-} from "@/state/api";
+import { useLazyGetUserDataQuery, useLoginMutation } from "@/state/api";
 import { router } from "expo-router";
 import { User } from "@/types";
 
@@ -13,7 +9,7 @@ export default function useUser() {
   const [loader, setLoader] = useState(false);
 
   const [loginAPI] = useLoginMutation();
-  const [registerAPI] = useRegisterMutation();
+
   const [fetchUserDataAPI, { data, error, isFetching }] =
     useLazyGetUserDataQuery();
 
@@ -26,23 +22,6 @@ export default function useUser() {
       fetchUserData();
     } catch (error) {
       console.error("Login failed:", error);
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  const register = async (userData: {
-    username: string;
-    password: string;
-    full_name: string;
-    email: string;
-  }) => {
-    setLoader(true);
-    try {
-      await registerAPI(userData).unwrap();
-      router.push("/(auth)/sign-in");
-    } catch (error) {
-      console.error("Register failed:", error);
     } finally {
       setLoader(false);
     }
@@ -80,7 +59,7 @@ export default function useUser() {
     if (data) setUser(data);
     if (error) {
       console.error("Fetch user data failed:", error);
-      router.push("/(auth)/sign-in");
+      // router.push("/(auth)/sign-in");
     }
   }, [data, error]);
 
@@ -88,7 +67,6 @@ export default function useUser() {
     user,
     loader,
     login,
-    register,
     logout,
     refetch: fetchUserData,
   };

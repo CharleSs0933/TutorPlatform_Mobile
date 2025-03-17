@@ -13,14 +13,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import { router } from "expo-router";
 import PackageCard from "@/components/cards/Package";
+import { WalletPackage } from "@/types";
+import useUser from "@/hooks/useUser";
 
 const PackageScreen = () => {
-  const wallet = {
-    balance: 150.0,
-    currency: "USD",
-  };
+  const { user } = useUser();
 
-  const packages = [
+  const packages: WalletPackage[] = [
     { id: 1, amount: 10, bonus: 0, price: 10 },
     { id: 2, amount: 25, bonus: 0, price: 25 },
     { id: 3, amount: 50, bonus: 0, price: 50 },
@@ -30,8 +29,11 @@ const PackageScreen = () => {
     { id: 7, amount: 1000, bonus: 250, price: 1000 },
   ];
 
-  const handleSubscribe = (packageId: number) => {
-    console.log(`Subscribed to package with ID: ${packageId}`);
+  const handleSubscribe = (pkg: WalletPackage) => {
+    router.push({
+      pathname: "/(routes)/confirm-package",
+      params: { package: JSON.stringify(pkg) },
+    });
   };
 
   return (
@@ -62,14 +64,12 @@ const PackageScreen = () => {
                 <Text style={styles.walletTitle}>Wallet Balance</Text>
                 <Ionicons name="wallet" size={30} color="#fff" />
               </View>
-              <Text style={styles.walletBalance}>
-                {wallet.balance} {wallet.currency}
-              </Text>
+              <Text style={styles.walletBalance}>${user?.walletAmount}</Text>
             </LinearGradient>
           </View>
 
           {/* Packages Section */}
-          <Text style={styles.sectionTitle}>Subscription Packages</Text>
+          <Text style={styles.sectionTitle}>Wallet Packages</Text>
           <ScrollView contentContainerStyle={styles.packageScrollContainer}>
             {packages.map((pkg) => (
               <PackageCard
@@ -77,7 +77,7 @@ const PackageScreen = () => {
                 amount={pkg.amount}
                 bonus={pkg.bonus}
                 price={pkg.price}
-                onSubscribe={() => handleSubscribe(pkg.id)}
+                onSubscribe={() => handleSubscribe(pkg)}
               />
             ))}
           </ScrollView>

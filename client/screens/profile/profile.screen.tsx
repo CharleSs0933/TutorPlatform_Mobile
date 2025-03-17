@@ -34,13 +34,6 @@ const ProfileScreen = () => {
     return <Redirect href="/(tabs)/resources" />;
   }
 
-  const totalEnrolled = (user.childrens ?? []).reduce((total, children) => {
-    return (
-      total +
-      (children.courseSubscriptions ? children.courseSubscriptions.length : 0)
-    );
-  }, 0);
-
   return (
     <View
       style={[
@@ -103,9 +96,7 @@ const ProfileScreen = () => {
               start={{ x: 0, y: 1 }}
               end={{ x: 1, y: 0 }}
             >
-              <Text style={styles.statNumber}>
-                {parent?.courseReviews?.length || 0}
-              </Text>
+              <Text style={styles.statNumber}>${user.walletAmount}</Text>
               <Text style={styles.statLabel}>Wallet</Text>
             </LinearGradient>
           </Pressable>

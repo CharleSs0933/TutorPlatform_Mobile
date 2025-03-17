@@ -19,7 +19,7 @@ import useUser from "@/hooks/useUser";
 
 const PersonalInformationScreen = () => {
   const { parent: parentString } = useLocalSearchParams();
-  const { refetch } = useUser();
+  const { refetch, user } = useUser();
   const initialProfile = parentString
     ? JSON.parse(parentString as string)
     : null;
@@ -50,7 +50,7 @@ const PersonalInformationScreen = () => {
 
     try {
       await updateParent({
-        parentId: 2,
+        parentId: Number(user?.id),
         formData,
       }).unwrap();
       refetch();

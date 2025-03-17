@@ -23,6 +23,7 @@
     "full_name": "Sarah Smith",
     "is_verified": true,
     "status": "Active",
+    "walletAmount": 1000,
     "last_login_at": 1708414200000,
     "account_locked": false,
     "password_changed_at": null

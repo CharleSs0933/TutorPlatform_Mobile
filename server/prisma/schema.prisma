@@ -36,6 +36,8 @@ model User {
   password String  @db.VarChar(255)
   email    String? @unique @db.VarChar(255)
 
+  walletAmount BigInt @default(0)
+
   role        UserRole @default(Parent)
   phone       String?  @db.VarChar(20)
   full_name   String?  @db.VarChar(255)

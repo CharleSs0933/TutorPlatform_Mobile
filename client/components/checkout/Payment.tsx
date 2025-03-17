@@ -1,41 +1,38 @@
 import { Alert, Image, Pressable, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { moderateScale, scale, verticalScale } from "react-native-size-matters";
-import { fontSizes } from "@/theme/app.constant";
+import React, { useState } from "react";
+import { moderateScale, verticalScale } from "react-native-size-matters";
 import { useStripe } from "@stripe/stripe-react-native";
 import {
+  useAddMoneyToWalletMutation,
   useCreateStripePaymentIntentMutation,
-  useCreateTrialBookingMutation,
 } from "@/state/api";
 import { images } from "@/constants";
 import CustomButton from "../CustomButton";
 import { router } from "expo-router";
 import Modal from "react-native-modal";
-import { Children } from "@/types";
+import { LinearGradient } from "expo-linear-gradient";
 
 declare interface PaymentProps {
   fullName: string;
   email: string;
   amount: number;
-  child: Children | null;
-  dates: { startTime: string; endTime: string }[];
-  courseId: string;
+  bonus: number;
+  refetch: () => void;
 }
 
 const Payment = ({
   amount,
   fullName,
   email,
-  child,
-  courseId,
-  dates,
+  bonus = 0,
+  refetch,
 }: PaymentProps) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [success, setSuccess] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const [createStripePaymentIntent] = useCreateStripePaymentIntentMutation();
-  const [createTrialBooking, { isLoading, isSuccess }] =
-    useCreateTrialBookingMutation();
+  const [addMoneyToWallet] = useAddMoneyToWalletMutation();
 
   const initializePaymentSheet = async () => {
     const { paymentIntent, customer, ephemeralKey } =
@@ -46,39 +43,38 @@ const Payment = ({
         // paymentMethodId: paymentMethod.id,
       }).unwrap();
 
+    console.log(paymentIntent);
+
     const { error } = await initPaymentSheet({
       merchantDisplayName: "Example, Inc.",
       customerId: customer,
       customerEphemeralKeySecret: ephemeralKey.secret,
       paymentIntentClientSecret: paymentIntent.client_secret,
+
       // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
       //methods that complete payment after a delay, like SEPA Debit and Sofort.
-      allowsDelayedPaymentMethods: true,
+      // allowsDelayedPaymentMethods: true,
       defaultBillingDetails: {
         name: "Jane Doe",
       },
     });
 
     if (!error) {
-      //   setLoading(true);
+      setLoading(true);
     }
   };
 
   const openPaymentSheet = async () => {
-    // await initializePaymentSheet();
+    await initializePaymentSheet();
 
     const { error } = await presentPaymentSheet();
 
     if (error) {
       Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
-      const bookingData = {
-        children_id: child?.id,
-        courseId,
-        dates,
-      };
       try {
-        await createTrialBooking(bookingData);
+        await addMoneyToWallet({ amount: amount + bonus }).unwrap();
+        refetch();
         setSuccess(true);
       } catch (error) {
         console.log(error);
@@ -86,35 +82,35 @@ const Payment = ({
     }
   };
 
-  useEffect(() => {
-    initializePaymentSheet();
-  }, []);
-
   return (
     <>
       <Pressable
-        style={{
-          marginTop: verticalScale(10),
-          paddingVertical: verticalScale(10),
-          paddingHorizontal: scale(20),
-          backgroundColor: "#2563EB", // Equivalent to primary-700
-          borderRadius: moderateScale(8),
-          alignItems: "center",
-          // opacity: selectedChildren === null ? 0.5 : 1,
-        }}
         onPress={openPaymentSheet}
-        disabled={child === null}
+        style={{
+          width: "80%",
+          borderRadius: moderateScale(10),
+          overflow: "hidden",
+          marginBottom: verticalScale(15),
+        }}
+        // disabled={!loading}
       >
-        <Text
+        <LinearGradient
+          colors={["#4A90E2", "#50E3C2"]}
           style={{
-            textAlign: "center",
-            color: "#FFFF",
-            fontSize: fontSizes.FONT24,
-            fontFamily: "Poppins_600SemiBold",
+            paddingVertical: verticalScale(12),
+            alignItems: "center",
           }}
         >
-          Confirm Payment
-        </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: "#fff",
+              fontWeight: "bold",
+            }}
+          >
+            Confirm
+          </Text>
+        </LinearGradient>
       </Pressable>
 
       <Modal isVisible={success} onBackdropPress={() => setSuccess(false)}>
@@ -122,19 +118,14 @@ const Payment = ({
           <Image source={images.check} className="w-28 h-28 mt-5" />
 
           <Text className="text-2xl text-center font-JakartaBold mt-5">
-            Booking placed successfully
-          </Text>
-
-          <Text className="text-md text-general-200 font-JakartaRegular text-center mt-3">
-            Thank you for your booking. Your reservation has been successfully
-            placed. Please proceed with your trip.
+            Add money to your wallet successfully
           </Text>
 
           <CustomButton
-            title="Back Home"
+            title="Back"
             onPress={() => {
               setSuccess(false);
-              router.push("/(tabs)");
+              router.push("/(routes)/package");
             }}
             className="mt-5"
           />

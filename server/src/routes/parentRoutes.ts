@@ -5,6 +5,7 @@ import {
   updateParentProfile,
 } from "../controllers/parentController";
 import multer from "multer";
+import tutorAuth from "../middleware/tutorAuth";
 
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage() });

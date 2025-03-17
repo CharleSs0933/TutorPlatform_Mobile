@@ -62,6 +62,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       where: {
         username,
       },
+      select: {
+        id: true,
+        username: true,
+        full_name: true,
+        email: true,
+      },
     });
 
     console.log(checkUser);
@@ -87,6 +93,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       data: { ...user, password: undefined },
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({ message: "Error register", error });
   }
 };
@@ -113,6 +121,7 @@ export const getUserData = async (
         picture: true,
         role: true,
         phone: true,
+        walletAmount: true,
       },
     });
 
@@ -183,7 +192,11 @@ export const getUserData = async (
 
     res.json({
       message: "Get user data successfully",
-      data: { ...user, ...additionalData },
+      data: {
+        ...user,
+        ...additionalData,
+        walletAmount: Number(user.walletAmount),
+      },
     });
   } catch (error) {
     console.error("Error fetching user data:", error);

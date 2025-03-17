@@ -207,7 +207,7 @@ export const createTrialBooking = async (
 
 const generateMeetLink = async () => {
   const token =
-    "ya29.a0AeXRPp5NALrnGckgmvS55tp9ilerZSBV36--uR3PiJGXrh0OR0b45Q6-PtESpXQJLo3LiZ4CLXGdK7vXB1NTLnS6M7fZdACVIewFXs-NvLiSlanUL7z7SOpMHKp0qwJ3NyrYtvpgkRD_XXmC_FMKRZbmAvABVWS4blOyl9EvjQaCgYKAdwSARISFQHGX2MidBiwh3UV9oVOPTheClEbBQ0177";
+    "ya29.a0AeXRPp5h2aihxzvBrC3VtE4EHXIJEtwEDFIw5S3SE-tBc8aRX9Yllw0JGmQkhvaWj3Aaf95fMAN58X3nQGEjsMkMnBfmZUcWGBW9dgYFzB8jUckEAiGNiCW_sP3FO0JrUqgFo98XlcV6RTt-vTcDD-IWYiHcFcQVFn8kKPH65QaCgYKAWoSARISFQHGX2Mi96tad1u3beAxVbfEXig-oQ0177";
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
