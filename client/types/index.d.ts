@@ -43,15 +43,6 @@ export interface Lesson {
   materials_needed?: string;
 }
 
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-  full_name: string;
-  phone: string;
-  role: "Tutor" | "Parent" | "Kid";
-  picture: string;
-}
 export interface Tutor {
   id: number;
   bio: string;
@@ -83,6 +74,8 @@ export interface Children {
     full_name: string;
     username?: string;
   };
+
+  courseSubscriptions?: CourseSubcription[];
 }
 export interface SearchCourseCardProps {
   course: Course;
@@ -212,6 +205,7 @@ export interface Parent {
   childrens?: Children[];
   tutorReviews?: TutorReview[];
   courseReviews?: CourseReview[];
+  bookings?: CourseSubcription[];
 }
 
 export interface TutorReviews {
@@ -324,3 +318,49 @@ interface FormData {
   date_of_birth: string;
   learning_goals: string;
 }
+
+export interface BaseUser {
+  id: number;
+  email: string;
+  username: string;
+  full_name: string;
+  phone: string;
+  walletAmount: number;
+  role: "Tutor" | "Parent" | "Kid";
+  picture: string;
+}
+
+export interface ParentUser extends BaseUser {
+  role: "Parent";
+  preferred_language?: string;
+  notifications_enabled?: boolean;
+  childrens?: Children[];
+}
+
+export interface TutorUser extends BaseUser {
+  role: "Tutor";
+  bio?: string;
+  qualifications?: string;
+  teaching_style?: string;
+  is_available?: boolean;
+  demo_video_url?: string;
+  image?: string;
+}
+
+export interface KidUser extends BaseUser {
+  role: "Kid";
+  learning_goals?: string;
+  date_of_birth?: string;
+  parent_id?: number;
+  courseSubscriptions?: CourseSubcription[];
+}
+
+// Tạo kiểu User chung bằng Union Type
+export type User = ParentUser | TutorUser | KidUser;
+
+export type WalletPackage = {
+  id: number;
+  amount: number;
+  bonus: number;
+  price: number;
+};

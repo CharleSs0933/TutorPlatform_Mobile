@@ -33,6 +33,7 @@ import hero3 from "@/assets/images/home/hero3.jpg";
 import SignUp from "@/assets/images/sign-up.jpg";
 import placeholder from "@/assets/images/placeholder.png";
 import check from "@/assets/images/check.png";
+import noResult from "@/assets/images/no-result.png";
 
 export const images = {
   onboarding1,
@@ -44,6 +45,7 @@ export const images = {
   SignUp,
   placeholder,
   check,
+  noResult,
 };
 
 export const icons = {
@@ -105,4 +107,78 @@ export const bannerData = [
   { image: images.hero1 },
   { image: images.hero2 },
   { image: images.hero3 },
+];
+
+export const courseSubjects = [
+  { value: "all", label: "All" },
+  { value: "Mathematics", label: "Mathematics" },
+  { value: "English", label: "English" },
+  { value: "Science", label: "Science" },
+  { value: "Chemistry", label: "Chemistry" },
+  { value: "Art", label: "Art" },
+  { value: "Computer Science", label: "Computer Science" },
+  { value: "Music", label: "Music" },
+];
+
+export const FAQData = [
+  {
+    id: 1,
+    question: "What age group is this platform suitable for?",
+    answer:
+      "Our platform is designed for children aged 5 to 15, with tailored courses for different age groups to ensure effective learning.",
+  },
+  {
+    id: 2,
+    question: "Are the lessons live or pre-recorded?",
+    answer:
+      "We offer both live interactive classes with tutors and pre-recorded lessons that kids can watch at their own pace.",
+  },
+  {
+    id: 3,
+    question: "How can parents track their child's progress?",
+    answer:
+      "Parents can monitor their child's progress through our dashboard, which provides detailed reports on lessons completed, quiz scores, and learning milestones.",
+  },
+  {
+    id: 4,
+    question: "What subjects are available on the platform?",
+    answer:
+      "We cover a wide range of subjects including Math, Science, English, Coding, Art, and more, all designed to be engaging and fun for kids.",
+  },
+  {
+    id: 5,
+    question: "Is there a free trial available?",
+    answer:
+      "Yes, we offer a free trial period so you can explore our platform and courses before making a commitment.",
+  },
+  {
+    id: 6,
+    question: "Do you provide certificates after course completion?",
+    answer:
+      "Yes! Kids receive certificates upon completing a course, which parents can download and share as a part of their child's achievements.",
+  },
+  {
+    id: 7,
+    question: "What if my child needs help during a lesson?",
+    answer:
+      "Our platform offers live tutor support, discussion forums, and a Q&A section where kids can ask questions and get quick assistance.",
+  },
+  {
+    id: 8,
+    question: "Can multiple children use the same account?",
+    answer:
+      "Each child should have their own account to track their individual progress, but parents can manage multiple accounts under one family dashboard.",
+  },
+  {
+    id: 9,
+    question: "What devices can be used to access the platform?",
+    answer:
+      "Our platform works on desktops, laptops, tablets, and mobile devices, making it easy for kids to learn from anywhere.",
+  },
+  {
+    id: 10,
+    question: "Is the content safe and kid-friendly?",
+    answer:
+      "Absolutely! All our courses are designed with child safety in mind, and we ensure that the learning environment is engaging, fun, and completely safe.",
+  },
 ];

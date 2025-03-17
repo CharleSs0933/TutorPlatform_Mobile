@@ -11,8 +11,11 @@ import { useEffect } from "react";
 import "./global.css";
 import Providers from "./providers";
 import ToastManager from "toastify-react-native";
+import { LogBox } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 SplashScreen.preventAutoHideAsync();
+LogBox.ignoreAllLogs();
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -36,12 +39,14 @@ export default function RootLayout() {
 
   return (
     <Providers>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(routes)/onboarding/index" />
-        <Stack.Screen name="(auth)" />
-      </Stack>
-      <ToastManager position="bottom" />
+      <GestureHandlerRootView>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(routes)/onboarding/index" />
+          <Stack.Screen name="(auth)" />
+        </Stack>
+        <ToastManager position="bottom" />
+      </GestureHandlerRootView>
     </Providers>
   );
 }

@@ -2,7 +2,8 @@ import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
 import { icons, images } from "@/constants";
 import useUser from "@/hooks/useUser";
-import { Link } from "expo-router";
+import { useRegisterMutation } from "@/state/api";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Image, ScrollView, Text, View } from "react-native";
 
@@ -13,7 +14,8 @@ const SignUp = () => {
     username: "",
     password: "",
   });
-  const { register } = useUser();
+  // const { register } = useUser();
+  const [register] = useRegisterMutation();
 
   const onSignUpPress = async () => {
     try {
@@ -22,7 +24,8 @@ const SignUp = () => {
         password: form.password,
         full_name: form.full_name,
         email: form.email,
-      });
+      }).unwrap();
+      router.push("/(auth)/sign-in");
     } catch (error) {
       console.log(error);
     }

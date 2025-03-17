@@ -51,7 +51,6 @@ export const getAllUsers = async (
       },
     });
 
-    
     const formattedUsers = users.map((user) => ({
       ...user,
       last_login_at: user.last_login_at?.toString(),
@@ -161,5 +160,40 @@ export const updateUser = async (
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ message: "Error updating user", error });
+  }
+};
+
+export const addMoneyToWallet = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { amount, userId } = req.body;
+
+  if (!userId || !amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+    res.status(400).json({ message: "Invalid userId or amount" });
+    return;
+  }
+
+  console.log("Request body:", req.body);
+
+  try {
+    const user = await prisma.user.update({
+      where: {
+        id: Number(userId),
+      },
+      data: {
+        walletAmount: {
+          increment: Number(amount),
+        },
+      },
+    });
+
+    res.json({
+      message: "Add money to wallet successfully",
+      data: {},
+    });
+  } catch (error) {
+    console.error("Error adding money to wallet:", error);
+    res.status(500).json({ message: "Error adding money to wallet", error });
   }
 };

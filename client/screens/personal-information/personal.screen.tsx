@@ -19,7 +19,7 @@ import useUser from "@/hooks/useUser";
 
 const PersonalInformationScreen = () => {
   const { parent: parentString } = useLocalSearchParams();
-  const { user, refetch } = useUser();
+  const { refetch, user } = useUser();
   const initialProfile = parentString
     ? JSON.parse(parentString as string)
     : null;
@@ -53,6 +53,7 @@ const PersonalInformationScreen = () => {
         parentId: Number(user?.id),
         formData,
       }).unwrap();
+      refetch();
       setIsEditing(false);
       refetch();
     } catch (error) {

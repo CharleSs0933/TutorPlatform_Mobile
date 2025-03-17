@@ -7,19 +7,22 @@ import {
   View,
 } from "react-native";
 import React, { useMemo, useState } from "react";
-import { Redirect, useLocalSearchParams } from "expo-router";
+import { Redirect, router, useLocalSearchParams } from "expo-router";
 import {
+  useCreateTrialBookingMutation,
   useGetChildrenQuery,
   useGetCourseAvailabilityQuery,
   useGetCourseQuery,
 } from "@/state/api";
 import { moderateScale, scale, verticalScale } from "react-native-size-matters";
-import { fontSizes, windowWidth } from "@/theme/app.constant";
+import { fontSizes, windowHeight, windowWidth } from "@/theme/app.constant";
 import { Children } from "@/types";
 import ChildrenCard from "@/components/cards/ChildrenCard";
-import Payment from "@/components/checkout/Payment";
-import useUser from "@/hooks/useUser";
 import { addHours, parse, format } from "date-fns";
+import { Image } from "react-native";
+import { images } from "@/constants";
+import Modal from "react-native-modal";
+import useUser from "@/hooks/useUser";
 
 const WEEKDAYS = [
   { name: "Sunday", value: 0 },
@@ -38,8 +41,8 @@ const CheckoutScreen = () => {
   const [selectedChildren, setSelectedChildren] = useState<Children | null>(
     null
   );
+  const [bookingSuccess, setBookingSuccess] = useState<boolean>(false);
 
-  const { user } = useUser();
   const {
     data: course,
     isLoading: isCourseLoading,
@@ -52,6 +55,10 @@ const CheckoutScreen = () => {
   const { data: children, isLoading: isChildrenLoading } = useGetChildrenQuery(
     {}
   );
+
+  const { user, refetch } = useUser();
+
+  const [createTrialBooking] = useCreateTrialBookingMutation();
 
   const formattedBookings = useMemo(() => {
     const today = new Date();
@@ -122,6 +129,42 @@ const CheckoutScreen = () => {
     }
   };
 
+  const isDayDisabled = (weekday: number) => {
+    return (
+      !course?.lessons ||
+      (!selectedWeekdays.includes(weekday) &&
+        selectedWeekdays.length >= course.lessons.length)
+    );
+  };
+
+  const handleConfirmBooking = async () => {
+    try {
+      if (selectedWeekdays.length === 0 || selectedTimes.length === 0) {
+        alert("Please select at least one day and time slot.");
+        return;
+      }
+
+      if (!selectedChildren) {
+        alert("Please select a child.");
+        return;
+      }
+
+      const bookingData = {
+        children_id: selectedChildren.id,
+        courseId,
+        dates: formattedBookings,
+        parent_id: user?.id,
+      };
+
+      await createTrialBooking(bookingData).unwrap();
+      refetch();
+      setBookingSuccess(true);
+    } catch (error) {
+      console.log(error);
+      alert("Failed to create booking. Please try again.");
+    }
+  };
+
   if (isCourseLoading || isAvailabilityLoading || isChildrenLoading)
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
@@ -129,17 +172,19 @@ const CheckoutScreen = () => {
       </View>
     );
 
-  if (isError) return <div>Failed to fetch course data</div>;
-  if (!course) return <div>Course not found</div>;
-  if (!children) return <Redirect href={"/(tabs)/profile"} />;
-
-  const isDayDisabled = (weekday: number) => {
+  if (isError)
     return (
-      !course.lessons ||
-      (!selectedWeekdays.includes(weekday) &&
-        selectedWeekdays.length >= course.lessons.length)
+      <View>
+        <Text>Failed to load course </Text>
+      </View>
     );
-  };
+  if (!course)
+    return (
+      <View>
+        <Text>Course not found</Text>
+      </View>
+    );
+  if (!children) return <Redirect href={"/(routes)/children-management"} />;
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -336,17 +381,102 @@ const CheckoutScreen = () => {
               }}
               ListEmptyComponent={<Text>No children available</Text>}
             />
-            <Payment
-              amount={course.price}
-              fullName={user?.full_name!}
-              email={user?.email!}
-              courseId={courseId}
-              child={selectedChildren}
-              dates={formattedBookings}
-            />
+
+            {selectedChildren && (
+              <Pressable
+                style={{
+                  backgroundColor: "#2467EC",
+                  paddingVertical: windowHeight(10),
+                  borderRadius: windowWidth(8),
+                  marginTop: windowHeight(8),
+                }}
+                onPress={() => handleConfirmBooking()}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#FFFF",
+                    fontSize: fontSizes.FONT24,
+                    fontFamily: "Poppins_600SemiBold",
+                  }}
+                >
+                  Confirm Booking
+                </Text>
+              </Pressable>
+            )}
           </View>
         )}
       </View>
+
+      {/* Success Modal */}
+      <Modal
+        isVisible={bookingSuccess}
+        onBackdropPress={() => setBookingSuccess(false)}
+      >
+        <View
+          style={{
+            backgroundColor: "#fff",
+            padding: moderateScale(20),
+            borderRadius: moderateScale(16),
+            alignItems: "center",
+          }}
+        >
+          <Image
+            source={images.check} // Assuming you have a checkmark image in constants
+            style={{
+              width: scale(80),
+              height: scale(80),
+              marginTop: verticalScale(10),
+            }}
+          />
+          <Text
+            style={{
+              fontSize: fontSizes.FONT24,
+              fontFamily: "Poppins_600SemiBold",
+              color: "#000",
+              textAlign: "center",
+              marginTop: verticalScale(20),
+            }}
+          >
+            Booking Successful!
+          </Text>
+          <Text
+            style={{
+              fontSize: fontSizes.FONT16,
+              fontFamily: "Poppins_400Regular",
+              color: "#666",
+              textAlign: "center",
+              marginTop: verticalScale(10),
+              marginBottom: verticalScale(20),
+            }}
+          >
+            Thank you for your booking. Your Teaching Sessions has been
+            successfully created. Enjoy your Teaching Sessions .
+          </Text>
+          <Pressable
+            style={{
+              backgroundColor: "#2467EC",
+              paddingVertical: verticalScale(10),
+              paddingHorizontal: scale(20),
+              borderRadius: moderateScale(8),
+            }}
+            onPress={() => {
+              setBookingSuccess(false);
+              router.push("/(tabs)");
+            }}
+          >
+            <Text
+              style={{
+                fontSize: fontSizes.FONT18,
+                fontFamily: "Poppins_600SemiBold",
+                color: "#fff",
+              }}
+            >
+              Go to Home
+            </Text>
+          </Pressable>
+        </View>
+      </Modal>
     </View>
   );
 };

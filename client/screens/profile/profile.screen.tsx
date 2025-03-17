@@ -1,5 +1,5 @@
 import {
-  Image,
+  ActivityIndicator,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -13,25 +13,26 @@ import useUser from "@/hooks/useUser";
 import { LinearGradient } from "expo-linear-gradient";
 import { scale, verticalScale } from "react-native-size-matters";
 import { fontSizes } from "@/theme/app.constant";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import {
   Feather,
-  FontAwesome,
-  Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { useGetParentByIdQuery } from "@/state/api";
 
 const ProfileScreen = () => {
-  const { user, logout } = useUser();
+  const { user, logout, loader } = useUser();
 
-  const {
-    data: parent,
-    isLoading,
-    isError,
-    refetch,
-  } = useGetParentByIdQuery({ userId: user?.id || 0 }, { skip: !user });
+  if (loader)
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+
+  if (user?.role !== "Parent") {
+    return <Redirect href="/(tabs)/resources" />;
+  }
 
   return (
     <View
@@ -69,7 +70,7 @@ const ProfileScreen = () => {
         <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
           <View style={[styles.profileImg, { boxShadow: "0 0 5 #888888" }]}>
             <Text className="text-3xl font-bold uppercase">
-              {parent?.profile.full_name.charAt(0)}
+              {user.full_name.charAt(0)}
             </Text>
           </View>
 
@@ -82,9 +83,9 @@ const ProfileScreen = () => {
                 },
               ]}
             >
-              {parent?.profile.full_name}
+              {user.full_name}
             </Text>
-            <Text style={styles.profileTitle}>{parent?.profile.email}</Text>
+            <Text style={styles.profileTitle}>{user.email}</Text>
           </View>
         </View>
         <View style={styles.statsContainer}>
@@ -95,9 +96,7 @@ const ProfileScreen = () => {
               start={{ x: 0, y: 1 }}
               end={{ x: 1, y: 0 }}
             >
-              <Text style={styles.statNumber}>
-                {parent?.courseReviews?.length || 0}
-              </Text>
+              <Text style={styles.statNumber}>${user.walletAmount}</Text>
               <Text style={styles.statLabel}>Wallet</Text>
             </LinearGradient>
           </Pressable>
@@ -111,7 +110,7 @@ const ProfileScreen = () => {
               end={{ x: 1, y: 0 }}
             >
               <Text style={styles.statNumber}>
-                {parent?.childrens?.length || 0}
+                {user.childrens?.length || 0}
               </Text>
               <Text style={styles.statLabel}>Children</Text>
             </LinearGradient>
@@ -134,7 +133,14 @@ const ProfileScreen = () => {
           onPress={() =>
             router.push({
               pathname: "/(routes)/personal",
-              params: { parent: JSON.stringify(parent?.profile) },
+              params: {
+                parent: JSON.stringify({
+                  username: user.username,
+                  email: user.email,
+                  full_name: user.full_name,
+                  phone: user.phone,
+                }),
+              },
             })
           }
         >
@@ -238,7 +244,7 @@ const ProfileScreen = () => {
             justifyContent: "space-between",
             marginBottom: verticalScale(20),
           }}
-          // onPress={() => router.push("/(routes)/my-tickets")}
+          onPress={() => router.push("/(routes)/faq")}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View
@@ -267,7 +273,7 @@ const ProfileScreen = () => {
                   color: "#000",
                 }}
               >
-                Unknown
+                FAQ's
               </Text>
               <Text
                 style={{
@@ -278,7 +284,7 @@ const ProfileScreen = () => {
                   opacity: 0.6,
                 }}
               >
-                Explore your all support tickets
+                Find intelligent answers instantly
               </Text>
             </View>
           </View>

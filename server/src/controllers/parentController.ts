@@ -89,7 +89,30 @@ export const getParentById = async (
       return;
     }
 
-    res.json({ message: "Parent retrieved successfully", data: parent });
+    const bookings = await prisma.courseSubscription.findMany({
+      where: {
+        children: {
+          parent_id: Number(parent.id),
+        },
+      },
+      include: {
+        course: true,
+        children: {
+          select: {
+            profile: {
+              select: {
+                full_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.json({
+      message: "Parent retrieved successfully",
+      data: { ...parent, bookings },
+    });
   } catch (error) {
     console.error("Error retrieving parent:", error);
     res.status(500).json({ message: "Error retrieving parent", error });

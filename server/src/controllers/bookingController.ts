@@ -55,7 +55,7 @@ export const createTrialBooking = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { courseId, children_id, dates } = req.body;
+  const { courseId, children_id, dates, parent_id } = req.body;
 
   try {
     // Validate request body
@@ -78,6 +78,7 @@ export const createTrialBooking = async (
       select: {
         id: true,
         total_lessons: true,
+        price: true,
         lessons: {
           select: {
             id: true,
@@ -114,6 +115,21 @@ export const createTrialBooking = async (
         },
         include: {
           courseSubscriptionSchedules: true,
+        },
+      });
+
+      await tx.parent.update({
+        where: {
+          id: Number(parent_id),
+        },
+        data: {
+          profile: {
+            update: {
+              walletAmount: {
+                decrement: course.price,
+              },
+            },
+          },
         },
       });
 
@@ -207,7 +223,7 @@ export const createTrialBooking = async (
 
 const generateMeetLink = async () => {
   const token =
-    "ya29.a0AeXRPp5NALrnGckgmvS55tp9ilerZSBV36--uR3PiJGXrh0OR0b45Q6-PtESpXQJLo3LiZ4CLXGdK7vXB1NTLnS6M7fZdACVIewFXs-NvLiSlanUL7z7SOpMHKp0qwJ3NyrYtvpgkRD_XXmC_FMKRZbmAvABVWS4blOyl9EvjQaCgYKAdwSARISFQHGX2MidBiwh3UV9oVOPTheClEbBQ0177";
+    "ya29.a0AeXRPp4OAVuOaNB-bR7ZktY5kUEF5bwBrUYGNAygzm8wukc6PgBSStYdRI4jH5gMHV4SKk6shiyWR3ksnv1Cg6mG2QzhmKnm66MXcI38f_XgoCcLKtut85IAwSkBCqTuTslMHsW0wg3rvCgfxg1Fsz4HCzlQsk_A6cuZ4S_LigaCgYKATESARISFQHGX2Mi3yrr-RpgljrVhWt-3V6rUQ0177";
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -332,5 +348,140 @@ export const payPayment = async (req: Request, res: Response) => {
       message: "Error paying payment",
       error: error instanceof Error ? error.message : String(error),
     });
+  }
+};
+
+export const getParentBookings = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      res.status(400).json({ message: "UserId is required" });
+      return;
+    }
+
+    const bookings = await prisma.courseSubscription.findMany({
+      where: {
+        children: {
+          parent_id: Number(userId),
+        },
+      },
+      include: {
+        course: true,
+        children: {
+          include: {
+            profile: {
+              select: {
+                full_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.json({
+      message: "Parent's bookings retrieved successfully",
+      data: bookings,
+    });
+  } catch (error) {
+    console.error("Error retrieving booking:", error);
+    res.status(500).json({
+      message: "Error retrieving parent booking",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
+
+export const cancelBooking = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { subscriptionId, userId } = req.body;
+
+    if (!subscriptionId || !userId) {
+      res
+        .status(400)
+        .json({ message: "Subscription ID or userId is required" });
+      return;
+    }
+
+    const subscription = await prisma.courseSubscription.findUnique({
+      where: { id: Number(subscriptionId) },
+      select: {
+        id: true,
+        status: true,
+        course: {
+          select: {
+            price: true,
+          },
+        },
+        teachingSessions: {
+          select: {
+            status: true,
+          },
+        },
+      },
+    });
+
+    if (!subscription) {
+      res.status(404).json({ message: "Subscription not found" });
+      return;
+    }
+
+    if (subscription.status === "Canceled") {
+      res.status(400).json({ message: "Subscription already canceled" });
+      return;
+    }
+
+    // Calculate refund amount
+    const totalSessions = subscription.teachingSessions.length;
+    const completedSessions = subscription.teachingSessions.filter(
+      (session) => session.status !== "NotYet"
+    ).length;
+    const pricePerSession = subscription.course.price / totalSessions;
+    const refundAmount = (totalSessions - completedSessions) * pricePerSession;
+
+    const updatedSubscription = await prisma.$transaction(async (prisma) => {
+      // Update subscription status
+      const updated = await prisma.courseSubscription.update({
+        where: { id: Number(subscriptionId) },
+        data: {
+          status: "Canceled",
+        },
+      });
+
+      // Delete pending sessions
+      const deletedSessions = await prisma.teachingSession.deleteMany({
+        where: {
+          subscription_id: Number(subscriptionId),
+          status: "NotYet",
+        },
+      });
+
+      if (refundAmount > 0) {
+        await prisma.user.update({
+          where: { id: Number(userId) },
+          data: {
+            walletAmount: {
+              increment: refundAmount,
+            },
+          },
+        });
+      }
+
+      return { updated, deletedSessionsCount: deletedSessions.count };
+    });
+
+    res.json({
+      message: "Booking canceled successfully",
+      data: updatedSubscription.updated,
+    });
+  } catch (error) {
+    console.error("Error canceling booking:", error);
+    res.status(500).json({ message: "Error canceling booking", error });
   }
 };

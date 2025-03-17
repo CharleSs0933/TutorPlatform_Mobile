@@ -19,7 +19,7 @@ const customBaseQuery = async (
   extraOptions: any
 ) => {
   const baseQuery = fetchBaseQuery({
-    baseUrl: "http://192.168.0.101:8000",
+    baseUrl: process.env.EXPO_PUBLIC_SERVER_URI,
     prepareHeaders: async (headers) => {
       const token = await SecureStore.getItemAsync("accessToken");
       if (token) {
@@ -394,6 +394,15 @@ export const api = createApi({
       }),
       providesTags: ["User"],
     }),
+    addMoneyToWallet: build.mutation<{}, { amount: number }>({
+      query: ({ amount }) => ({
+        url: "users/add-money",
+        method: "POST",
+        body: {
+          amount,
+        },
+      }),
+    }),
   }),
 });
 
@@ -420,4 +429,5 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useLazyGetUserDataQuery,
+  useAddMoneyToWalletMutation,
 } = api;

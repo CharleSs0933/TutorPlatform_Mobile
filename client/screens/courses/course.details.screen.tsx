@@ -2,6 +2,7 @@ import ReviewCard from "@/components/cards/ReviewCard";
 import CourseDetailsTabs from "@/components/course/CourseDetailsTabs";
 import CourseLesson from "@/components/course/CourseLesson";
 import { images } from "@/constants";
+import useUser from "@/hooks/useUser";
 import { useGetCourseQuery } from "@/state/api";
 import {
   fontSizes,
@@ -25,6 +26,8 @@ export default function CourseDetailsScreen() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: course, isLoading, isError } = useGetCourseQuery(id);
+
+  const { user } = useUser();
 
   if (isLoading) {
     return (
@@ -268,41 +271,92 @@ export default function CourseDetailsScreen() {
         )}
       </ScrollView>
 
-      <BlurView
-        intensity={2}
-        style={{
-          backgroundColor: "#eaf3fb85",
-          paddingHorizontal: windowHeight(12),
-          paddingVertical: windowHeight(8),
-          paddingBottom: verticalScale(5),
-        }}
-      >
-        <TouchableOpacity
+      {user?.role === "Parent" && (
+        <BlurView
+          intensity={2}
           style={{
-            backgroundColor: "#2467EC",
-            paddingVertical: windowHeight(10),
-            borderRadius: windowWidth(8),
+            backgroundColor: "#eaf3fb85",
+            paddingHorizontal: windowHeight(12),
+            paddingVertical: windowHeight(8),
+            paddingBottom: verticalScale(5),
           }}
-          // disabled={purchaseLoader}
-          onPress={() =>
-            router.push({
-              pathname: "/(routes)/checkout",
-              params: { courseId: course.id },
-            })
-          }
         >
-          <Text
-            style={{
-              textAlign: "center",
-              color: "#FFFF",
-              fontSize: fontSizes.FONT24,
-              fontFamily: "Poppins_600SemiBold",
-            }}
-          >
-            Buy now {course.price === 0 ? "(free)" : `$${course.price}`}
-          </Text>
-        </TouchableOpacity>
-      </BlurView>
+          {user.childrens && user.childrens.length === 0 ? (
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#2467EC",
+                paddingVertical: windowHeight(10),
+                borderRadius: windowWidth(8),
+              }}
+              onPress={() =>
+                router.push({
+                  pathname: "/(routes)/children-management",
+                })
+              }
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#FFFF",
+                  fontSize: fontSizes.FONT24,
+                  fontFamily: "Poppins_600SemiBold",
+                }}
+              >
+                Add your child
+              </Text>
+            </TouchableOpacity>
+          ) : user.walletAmount < course.price ? (
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#2467EC",
+                paddingVertical: windowHeight(10),
+                borderRadius: windowWidth(8),
+              }}
+              onPress={() =>
+                router.push({
+                  pathname: "/(routes)/package",
+                })
+              }
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#FFFF",
+                  fontSize: fontSizes.FONT24,
+                  fontFamily: "Poppins_600SemiBold",
+                }}
+              >
+                Add funds
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#2467EC",
+                paddingVertical: windowHeight(10),
+                borderRadius: windowWidth(8),
+              }}
+              onPress={() =>
+                router.push({
+                  pathname: "/(routes)/checkout",
+                  params: { courseId: course.id },
+                })
+              }
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#FFFF",
+                  fontSize: fontSizes.FONT24,
+                  fontFamily: "Poppins_600SemiBold",
+                }}
+              >
+                Buy now {course.price === 0 ? "(free)" : `$${course.price}`}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </BlurView>
+      )}
     </View>
   );
 }

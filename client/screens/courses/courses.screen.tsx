@@ -17,11 +17,13 @@ import { fontSizes, windowHeight, windowWidth } from "@/theme/app.constant";
 import GradiantText from "@/components/common/GradientText";
 import { EvilIcons } from "@expo/vector-icons";
 import usePagination from "@/hooks/usePagination";
+import CourseSearch from "@/components/course/CourseSearch";
+import CourseFilter from "@/components/course/CourseFilter";
+import NoResults from "@/components/course/NoResults";
 
 const CoursesScreen = () => {
   const {
     data,
-    totalResult,
     refreshing,
     loadingMore,
     handleRefresh,
@@ -43,93 +45,69 @@ const CoursesScreen = () => {
     >
       <View style={{}}>
         <StatusBar barStyle={"dark-content"} />
-        {initialLoader ? (
+        {/* {initialLoader ? (
           <ActivityIndicator size="large" />
-        ) : (
-          <View
-            style={{
-              paddingHorizontal: scale(8),
-            }}
-          >
-            <FlatList
-              data={data}
-              ListHeaderComponent={() => (
-                <View style={{ marginHorizontal: windowWidth(20) }}>
-                  <View
-                    style={{ flexDirection: "row", marginTop: windowHeight(8) }}
+        ) : ( */}
+        <View
+          style={{
+            paddingHorizontal: scale(8),
+          }}
+        >
+          <FlatList
+            data={data}
+            ListHeaderComponent={() => (
+              <View style={{ marginHorizontal: windowWidth(20) }}>
+                <View
+                  style={{ flexDirection: "row", marginTop: windowHeight(8) }}
+                >
+                  <Text
+                    style={{
+                      fontSize: fontSizes.FONT35,
+                      fontFamily: "Poppins_500Medium",
+                      color: "#000",
+                    }}
                   >
-                    <Text
-                      style={{
-                        fontSize: fontSizes.FONT35,
-                        fontFamily: "Poppins_500Medium",
-                        color: "#000",
-                      }}
-                    >
-                      All
-                    </Text>
-                    <GradiantText
-                      text="Courses"
-                      styles={{
-                        fontSize: fontSizes.FONT35,
-                        fontFamily: "Poppins_500Medium",
-                        paddingLeft: scale(5),
-                      }}
-                    />
-                  </View>
-                  <View className="relative">
-                    <TextInput
-                      placeholder="Search for Courses"
-                      placeholderTextColor={"#000"}
-                      className="bg-white text-black font-PoppinsRegular text-xl"
-                      style={{
-                        height: verticalScale(40),
-                        marginTop: verticalScale(10),
-                        borderRadius: moderateScale(30),
-                        paddingHorizontal: moderateScale(15),
-                        borderWidth: 1,
-                        borderColor: "#000",
-                      }}
-                    />
-                    <Pressable
-                      style={{
-                        position: "absolute",
-                        right: windowWidth(10),
-                        top: windowHeight(16),
-                      }}
-                    >
-                      <EvilIcons
-                        name="search"
-                        size={scale(30)}
-                        color={"blue"}
-                      />
-                    </Pressable>
-                  </View>
+                    All
+                  </Text>
+                  <GradiantText
+                    text="Courses"
+                    styles={{
+                      fontSize: fontSizes.FONT35,
+                      fontFamily: "Poppins_500Medium",
+                      paddingLeft: scale(5),
+                    }}
+                  />
                 </View>
-              )}
-              keyExtractor={(item) => item.id.toString()}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => <CourseCard item={item} />}
-              ListEmptyComponent={<Text>No courses Available yet!</Text>}
-              //   ListFooterComponent={() => (
-              //     <View
-              //       style={{
-              //         paddingBottom: verticalScale(0),
-              //       }}
-              //     ></View>
-              //   )}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={handleRefresh}
+                <CourseSearch />
+                <CourseFilter />
+              </View>
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => <CourseCard item={item} />}
+            ListEmptyComponent={
+              initialLoader ? (
+                <ActivityIndicator
+                  size="large"
+                  className="text-primary-300 mt-5"
                 />
-              }
-              contentContainerStyle={{ paddingBottom: 50 }}
-              ListFooterComponent={renderFooter}
-              onEndReached={loadMore}
-              onEndReachedThreshold={0.1}
-            />
-          </View>
-        )}
+              ) : (
+                <NoResults />
+              )
+            }
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+              />
+            }
+            contentContainerStyle={{ paddingBottom: 50 }}
+            ListFooterComponent={renderFooter}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.1}
+          />
+        </View>
+        {/* )} */}
       </View>
     </SafeAreaView>
   );

@@ -22,7 +22,7 @@
   },
   {
     "id": 4,
-    "status": "Inactive",
+    "status": "Canceled",
     "sessions_remaining": 10,
     "course_id": 5,
     "children_id": 14
@@ -57,7 +57,7 @@
   },
   {
     "id": 9,
-    "status": "Inactive",
+    "status": "Canceled",
     "sessions_remaining": 12,
     "course_id": 6,
     "children_id": 19

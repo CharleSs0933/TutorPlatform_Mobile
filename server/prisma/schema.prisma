@@ -36,6 +36,8 @@ model User {
   password String  @db.VarChar(255)
   email    String? @unique @db.VarChar(255)
 
+  walletAmount BigInt @default(0)
+
   role        UserRole @default(Parent)
   phone       String?  @db.VarChar(20)
   full_name   String?  @db.VarChar(255)
@@ -176,8 +178,8 @@ model DayAvailability {
 }
 
 model CourseSubscription {
-  id                 Int    @id @default(autoincrement())
-  status             String
+  id                 Int                      @id @default(autoincrement())
+  status             CourseSubscriptionStatus @default(Active)
   sessions_remaining Int?
 
   course_id Int
@@ -348,4 +350,10 @@ enum SessionStatus {
   NotYet
   Attended
   Absent
+}
+
+enum CourseSubscriptionStatus {
+  Active
+  Canceled
+  Completed
 }
