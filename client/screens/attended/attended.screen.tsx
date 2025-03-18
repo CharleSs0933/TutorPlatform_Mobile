@@ -11,7 +11,7 @@ import { AnimatedCircularProgress } from "react-native-circular-progress";
 const AttendedScreen = () => {
   const { childId } = useLocalSearchParams();
   const {
-    data: sessions = [], // Default to empty array to avoid undefined
+    data: sessions = [],
     isLoading,
     isError,
   } = useGetSessionQuery({
@@ -22,7 +22,6 @@ const AttendedScreen = () => {
     const subscriptionSessions = sessions.filter(
       (session: any) => session.subscription_id === item.subscription_id
     );
-
     const attendedCount = subscriptionSessions.filter(
       (session: any) => session.status === "Attended"
     ).length;
@@ -73,7 +72,10 @@ const AttendedScreen = () => {
             onPress={() =>
               router.push({
                 pathname: "/(routes)/attended-detail",
-                params: { subscriptionId: item.subscription_id.toString() },
+                params: {
+                  subscriptionId: item.subscription_id.toString(),
+                  childId: childId.toString(),
+                },
               })
             }
           >

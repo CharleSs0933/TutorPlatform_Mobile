@@ -15,6 +15,7 @@ import { scale, verticalScale } from "react-native-size-matters";
 import { fontSizes } from "@/theme/app.constant";
 import { Redirect, router } from "expo-router";
 import {
+  Entypo,
   Feather,
   MaterialCommunityIcons,
   MaterialIcons,
@@ -285,6 +286,59 @@ const ProfileScreen = () => {
                 }}
               >
                 Find intelligent answers instantly
+              </Text>
+            </View>
+          </View>
+        </Pressable>
+
+        <Pressable
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: verticalScale(20),
+          }}
+          onPress={() =>
+            router.push({
+              pathname: "/(routes)/subscribed-courses",
+            })
+          }
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                width: scale(38),
+                height: scale(38),
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: scale(10),
+                borderWidth: 1,
+                borderColor: "#E2DDFF",
+              }}
+            >
+              <Entypo name="open-book" size={scale(22)} color={"#0047AB"} />
+            </View>
+            <View>
+              <Text
+                style={{
+                  marginLeft: scale(10),
+                  fontSize: fontSizes.FONT22,
+                  fontFamily: "Poppins_400Regular",
+                  color: "#000",
+                }}
+              >
+                Courses subscription
+              </Text>
+              <Text
+                style={{
+                  marginLeft: scale(10),
+                  fontSize: fontSizes.FONT15,
+                  fontFamily: "Poppins_400Regular",
+                  color: "#000",
+                  opacity: 0.6,
+                }}
+              >
+                Let's see your subscribed courses for your children
               </Text>
             </View>
           </View>
