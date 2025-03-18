@@ -66,7 +66,7 @@ function CalendarScreen() {
   // Function to handle joining Google Meet
   const handleJoinMeeting = (googleMeetId: string | undefined) => {
     if (googleMeetId) {
-      Linking.openURL(`https://meet.google.com/${googleMeetId}`);
+      Linking.openURL(`${googleMeetId}`);
     } else {
       alert("No Google Meet link available");
     }

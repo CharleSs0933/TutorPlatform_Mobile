@@ -326,7 +326,7 @@ export interface BaseUser {
   full_name: string;
   phone: string;
   walletAmount: number;
-  role: "Tutor" | "Parent" | "Kid";
+  role: "Tutor" | "Parent" | "Chidren";
   picture: string;
 }
 
@@ -348,7 +348,7 @@ export interface TutorUser extends BaseUser {
 }
 
 export interface KidUser extends BaseUser {
-  role: "Kid";
+  role: "Children";
   learning_goals?: string;
   date_of_birth?: string;
   parent_id?: number;
