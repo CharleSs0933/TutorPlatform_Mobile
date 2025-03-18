@@ -3,11 +3,11 @@ import React from "react";
 import ResourceScreen from "@/screens/resources/resource.screen";
 import useUser from "@/hooks/useUser";
 import { Redirect } from "expo-router";
+import CalendarChildScreen from "@/screens/resources/calendarChild.screen";
 
 const ResourceIndex = () => {
   const { user, loader } = useUser();
 
-  // Show loading indicator while user data is being fetched
   if (loader) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -17,21 +17,14 @@ const ResourceIndex = () => {
   }
 
   if (!user) {
-    return <Redirect href="/(auth)/sign-in" />; // Adjust to your login route
+    return <Redirect href="/(auth)/sign-in" />;
   }
 
   // Role-based rendering
   if (user.role === "Parent") {
     return <ResourceScreen />;
   } else {
-    return (
-      <Redirect
-        href={{
-          pathname: "/(routes)/calendar",
-          params: { childId: user.id.toString() },
-        }}
-      />
-    );
+    return <CalendarChildScreen />;
   }
 };
 
