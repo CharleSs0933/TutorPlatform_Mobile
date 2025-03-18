@@ -95,7 +95,7 @@ function CalendarScreen() {
           let backgroundColor = "#fff"; // Default
           if (item.status === "Attended") backgroundColor = "#28a745";
           if (item.status === "Absent") backgroundColor = "#dc3545";
-          if (item.status === "NotYet") backgroundColor = "#fff3cd";
+          if (item.status === "NotYet") backgroundColor = "#555";
 
           return (
             <View style={styles.card}>
