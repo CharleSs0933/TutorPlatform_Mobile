@@ -72,7 +72,10 @@ const AttendedScreen = () => {
             onPress={() =>
               router.push({
                 pathname: "/(routes)/attended-detail",
-                params: { subscriptionId: item.subscription_id.toString() },
+                params: {
+                  subscriptionId: item.subscription_id.toString(),
+                  childId: childId.toString(),
+                },
               })
             }
           >

@@ -9,13 +9,13 @@ import { useGetSessionQuery } from "@/state/api";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const DetailAttendedScreen = () => {
-  const { subscriptionId } = useLocalSearchParams();
+  const { subscriptionId, childId } = useLocalSearchParams();
   const {
     data: sessions = [],
     isLoading,
     isError,
   } = useGetSessionQuery({
-    userId: Number(subscriptionId),
+    userId: Number(childId),
   });
 
   const subscriptionSessions = sessions.filter(
@@ -30,10 +30,7 @@ const DetailAttendedScreen = () => {
   const attendedCount = subscriptionSessions.filter(
     (session: any) => session.status === "Attended"
   ).length;
-  const totalSessions = subscriptionSessions.filter(
-    (session: any) =>
-      session.status === "Attended" || session.status === "Absent"
-  ).length;
+  const totalSessions = attendedCount + absentCount;
 
   const attendancePercentage =
     totalSessions > 0 ? (attendedCount / totalSessions) * 100 : 0;
@@ -44,9 +41,9 @@ const DetailAttendedScreen = () => {
     const isAbsent = item.status === "Absent";
     const isFuture = item.status === "NotYet";
     const checkmarkColor = isAttended
-      ? "#28a745"
+      ? "#01CED3"
       : isAbsent
-      ? "#FF6F61"
+      ? "#6248FF"
       : "#666";
 
     return (
@@ -79,7 +76,7 @@ const DetailAttendedScreen = () => {
     );
   }
 
-  if (isError || !subscriptionSessions) {
+  if (isError || !sessions) {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>No session details available</Text>
@@ -139,12 +136,20 @@ const DetailAttendedScreen = () => {
         </View>
         <View style={styles.statusRow}>
           <View style={styles.statusItem}>
-            <Text style={styles.statusValue}>{attendedCount}</Text>
-            <Text style={styles.statusLabel}>Present</Text>
+            <Text style={[styles.statusValue, { color: "#01CED3" }]}>
+              {attendedCount}
+            </Text>
+            <Text style={[styles.statusLabel, { color: "#01CED3" }]}>
+              Present
+            </Text>
           </View>
           <View style={styles.statusItem}>
-            <Text style={styles.statusValue}>{absentCount}</Text>
-            <Text style={styles.statusLabel}>Absent</Text>
+            <Text style={[styles.statusValue, { color: "#6248FF" }]}>
+              {absentCount}
+            </Text>
+            <Text style={[styles.statusLabel, { color: "#6248FF" }]}>
+              Absent
+            </Text>
           </View>
           <View style={styles.statusItem}>
             <Text style={styles.statusValue}>{notYetCount}</Text>
