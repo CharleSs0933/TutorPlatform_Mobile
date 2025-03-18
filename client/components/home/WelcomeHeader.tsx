@@ -1,12 +1,13 @@
-import { StatusBar, Text, View } from "react-native";
+import { Pressable, StatusBar, Text, View } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { moderateScale, verticalScale } from "react-native-size-matters";
+import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 import { fontSizes } from "@/theme/app.constant";
 import useUser from "@/hooks/useUser";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const WelcomeHeader = () => {
-  const { user } = useUser();
+  const { user, logout } = useUser();
 
   return (
     <LinearGradient
@@ -49,6 +50,22 @@ const WelcomeHeader = () => {
             Let's start Learning
           </Text>
         </View>
+        <Pressable onPress={() => logout()}>
+          <View
+            style={{
+              width: scale(45),
+              height: scale(45),
+              borderRadius: scale(10),
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#004FAB",
+              borderWidth: 0,
+              borderColor: "transparent",
+            }}
+          >
+            <MaterialIcons name="logout" size={scale(25)} color={"#fff"} />
+          </View>
+        </Pressable>
       </View>
     </LinearGradient>
   );

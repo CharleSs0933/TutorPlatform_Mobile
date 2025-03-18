@@ -197,6 +197,7 @@ export const getUserData = async (
             courseSubscriptions: {
               include: {
                 course: true,
+                teachingSessions: true,
               },
             },
           },

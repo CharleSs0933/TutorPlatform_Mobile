@@ -16,6 +16,7 @@ export default function useUser() {
     setLoader(true);
     try {
       const data = await loginAPI(credentials).unwrap();
+
       await SecureStore.setItemAsync("accessToken", data.accessToken);
       router.push("/(tabs)");
       fetchUserData();
