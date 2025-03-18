@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useGetSessionQuery } from "@/state/api";
@@ -90,7 +91,15 @@ function CalendarScreen() {
       </LinearGradient>
       <Agenda
         items={items}
-        renderEmptyData={() => <Text>No sessions</Text>}
+        renderEmptyData={() => {
+          return (
+            <Image
+              source={require("../../assets/images/noSession.png")}
+              style={styles.taglineImage}
+              resizeMode="contain"
+            />
+          );
+        }}
         renderItem={(item: TeachingSession) => {
           let backgroundColor = "#fff"; // Default
           if (item.status === "Attended") backgroundColor = "#28a745";
@@ -270,5 +279,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 5,
+  },
+  taglineImage: {
+    width: scale(300),
+    height: scale(300),
+    margin: "auto",
   },
 });
